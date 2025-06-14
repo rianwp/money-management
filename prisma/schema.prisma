@@ -1,0 +1,92 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  password  String
+  name      String
+  phone     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  categories   Category[]
+  transactions Transaction[]
+  summary      UserSummary?
+
+  @@map("users")
+}
+
+model Category {
+  id          Int         @id @default(autoincrement())
+  name        String
+  color       String      // Hex color code like #FF5733
+  icon        String?     // Optional icon identifier
+  type        TransactionType
+  description String?
+  isActive    Boolean     @default(true)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  // Foreign Keys
+  userId Int
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // Relations
+  transactions Transaction[]
+
+  // Ensure unique category names per user and type
+  @@unique([userId, name, type])
+  @@map("categories")
+}
+
+model Transaction {
+  id          Int             @id @default(autoincrement())
+  amount      Decimal         @db.Decimal(12, 2) // Supports up to 9,999,999,999.99
+  description String?
+  type        TransactionType
+  date        DateTime        @default(now()) // Transaction date (can be different from createdAt)
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+
+  // Foreign Keys
+  userId     Int
+  categoryId Int
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  category   Category @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+
+  // Index for better query performance
+  @@index([userId, type])
+  @@index([userId, date])
+  @@map("transactions")
+}
+
+// Optional: User summary table for caching totals (recommended for better performance)
+model UserSummary {
+  id            Int     @id @default(autoincrement())
+  totalIncome   Decimal @default(0) @db.Decimal(12, 2)
+  totalOutcome  Decimal @default(0) @db.Decimal(12, 2)
+  currentMonth  Int
+  currentYear   Int
+  lastUpdated   DateTime @updatedAt
+
+  // Foreign Keys
+  userId Int  @unique
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, currentMonth, currentYear])
+  @@map("user_summaries")
+}
+
+// Enums
+enum TransactionType {
+  INCOME
+  OUTCOME
+}
