@@ -34,9 +34,9 @@ const AuthForm = ({ data }: IAuthFormProps) => {
 	}
 	return (
 		<Card className="flex flex-col gap-y-4 px-12 py-8">
-			<h1 className="font-bold text-center text-2xl self-center">
+			<h2 className="font-bold text-center text-2xl self-center">
 				{data.submitCta}
-			</h1>
+			</h2>
 			<Form {...form}>
 				<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
 					{data.inputField.map((item) => (
