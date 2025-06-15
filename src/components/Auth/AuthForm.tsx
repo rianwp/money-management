@@ -59,7 +59,13 @@ const AuthForm = ({ data }: IAuthFormProps) => {
 							)}
 						/>
 					))}
-					<Button type="submit">{data.submitCta}</Button>
+					<Button
+						type="submit"
+						size="lg"
+						className="w-full bg-blue-600 hover:bg-blue-700"
+					>
+						{data.submitCta}
+					</Button>
 				</form>
 			</Form>
 

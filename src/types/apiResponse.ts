@@ -1,9 +1,8 @@
-export interface IApiResponse<T> {
+export interface IApiResponse<T = object> {
 	success: boolean
 	data?: T
 	error?: {
 		code: string
 		message: string
-		details?: unknown
 	}
 }

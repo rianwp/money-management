@@ -20,27 +20,27 @@ import {
 const items = [
 	{
 		title: 'Dashboard',
-		url: '#',
+		url: '/dashboard',
 		icon: Home,
 	},
 	{
 		title: 'Income & Outcome',
-		url: '#',
+		url: '/income-and-outcome',
 		icon: DollarSign,
 	},
 	{
 		title: 'Scheduling',
-		url: '#',
+		url: '/scheduling',
 		icon: Calendar,
 	},
 	{
 		title: 'Market & Investment',
-		url: '#',
+		url: '/market-and-investment',
 		icon: ChartNoAxesColumnIncreasing,
 	},
 	{
 		title: 'Settings',
-		url: '#',
+		url: '/settings',
 		icon: Settings,
 	},
 ]
