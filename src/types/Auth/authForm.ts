@@ -16,7 +16,7 @@ interface IInputField {
 export interface IAuthFormComponentData {
 	submitCta: string
 	inputField: IInputField[]
-	submitFn: (values: ILoginRequest | IRegisterRequest) => void
+	submitFn: (values: ILoginRequest | IRegisterRequest) => Promise<unknown>
 	redirectCta: {
 		ctaText: string
 		href: string

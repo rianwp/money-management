@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import NextAuth from 'next-auth'
 import Credentials from 'next-auth/providers/credentials'
 import prisma from './db'
@@ -8,37 +7,31 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
 	providers: [
 		Credentials({
 			async authorize(credentials) {
-				try {
-					if (!credentials) {
-						return null
-					}
+				if (!credentials) {
+					return null
+				}
 
-					const user = await prisma.user.findFirst({
-						where: {
-							email: credentials.email || '',
-						},
-					})
+				const user = await prisma.user.findFirst({
+					where: {
+						email: credentials.email || '',
+					},
+				})
 
-					if (user) {
-						const isPasswordValid = await verifyPassword(
-							(credentials.password as string) || '',
-							user?.password || ''
-						)
-
-						if (!isPasswordValid) return null
-
-						return {
-							id: user.id.toString(),
-							name: user.name,
-							email: user.email,
-						}
-					} else {
-						return null
-					}
-				} catch (error) {
-					throw new Error(
-						JSON.stringify({ errors: 'Authorize error', status: false })
+				if (user) {
+					const isPasswordValid = await verifyPassword(
+						(credentials.password as string) || '',
+						user?.password || ''
 					)
+
+					if (!isPasswordValid) return null
+
+					return {
+						id: user.id.toString(),
+						name: user.name,
+						email: user.email,
+					}
+				} else {
+					return null
 				}
 			},
 		}),
@@ -51,9 +44,9 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
 	session: { strategy: 'jwt' },
 	secret: process.env.JWT_SECRET || '',
 	callbacks: {
-		async signIn(userDetail) {
-			if (Object.keys(userDetail).length === 0) {
-				return false
+		async signIn({ user, account }) {
+			if (account?.provider === 'credentials' && !user) {
+				throw new Error('Invalid credentials')
 			}
 			return true
 		},

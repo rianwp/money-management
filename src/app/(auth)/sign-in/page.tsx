@@ -2,6 +2,7 @@
 
 import AuthForm from '@/components/Auth/AuthForm'
 import AuthPage from '@/components/Auth/AuthPage'
+import { signIn } from 'next-auth/react'
 import { loginSchema } from '@/types/Auth/api'
 import { IAuthFormComponentData } from '@/types/Auth/authForm'
 
@@ -22,7 +23,12 @@ const Page = () => {
 				type: 'password',
 			},
 		],
-		submitFn: () => {},
+		submitFn: async (values) => {
+			return await signIn('credentials', {
+				...values,
+				redirect: false,
+			})
+		},
 		redirectCta: {
 			ctaText: `Don't have an account?`,
 			href: '/sign-up',

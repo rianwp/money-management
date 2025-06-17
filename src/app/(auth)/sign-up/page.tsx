@@ -34,7 +34,9 @@ const Page = () => {
 				type: 'tel',
 			},
 		],
-		submitFn: () => {},
+		submitFn: async (values) => {
+			console.log(values)
+		},
 		redirectCta: {
 			ctaText: 'Already have an account?',
 			href: '/sign-in',

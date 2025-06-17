@@ -1,0 +1,19 @@
+@import 'tailwindcss';
+
+.toast {
+	[data-title] {
+		@apply !font-semibold;
+	}
+}
+
+.toast--error {
+	@apply !bg-red-500 !text-white !border-red-500;
+
+	[data-title] {
+		@apply !font-bold;
+	}
+
+	[data-description] {
+		@apply !text-white;
+	}
+}
