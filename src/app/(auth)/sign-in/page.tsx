@@ -2,11 +2,12 @@
 
 import AuthForm from '@/components/Auth/AuthForm'
 import AuthPage from '@/components/Auth/AuthPage'
-import { signIn } from 'next-auth/react'
 import { loginSchema } from '@/types/Auth/api'
 import { IAuthFormComponentData } from '@/types/Auth/authForm'
+import useSignIn from '@/hooks/auth/useSignIn'
 
 const Page = () => {
+	const { mutateAsync, isPending } = useSignIn()
 	const componentData: IAuthFormComponentData = {
 		submitCta: 'Sign In',
 		inputField: [
@@ -24,10 +25,7 @@ const Page = () => {
 			},
 		],
 		submitFn: async (values) => {
-			return await signIn('credentials', {
-				...values,
-				redirect: false,
-			})
+			return await mutateAsync(values)
 		},
 		redirectCta: {
 			ctaText: `Don't have an account?`,
@@ -38,7 +36,7 @@ const Page = () => {
 	}
 	return (
 		<AuthPage>
-			<AuthForm data={componentData} />
+			<AuthForm data={componentData} isPending={isPending} />
 		</AuthPage>
 	)
 }

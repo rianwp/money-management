@@ -16,19 +16,15 @@ import {
 import { Input } from '@/components/ui/input'
 import Link from 'next/link'
 import { Card } from '../ui/card'
-import { useMutation } from '@tanstack/react-query'
 import ButtonLoader from '../Utils/ButtonLoader'
-import { toast } from 'sonner'
 import '@/assets/style/toast.css'
-import { AuthError } from 'next-auth'
-import { useState } from 'react'
 
 interface IAuthFormProps {
 	data: IAuthFormComponentData
+	isPending: boolean
 }
 
-const AuthForm = ({ data }: IAuthFormProps) => {
-	const [error, setError] = useState<string>('')
+const AuthForm = ({ data, isPending }: IAuthFormProps) => {
 	const form = useForm<ILoginRequest | IRegisterRequest>({
 		resolver: zodResolver(data.formSchema),
 		defaultValues: data.inputField.reduce((acc, field) => {
@@ -36,35 +32,8 @@ const AuthForm = ({ data }: IAuthFormProps) => {
 		}, {}),
 	})
 
-	const { mutateAsync, isPending } = useMutation({
-		mutationFn: data.submitFn,
-	})
-
 	const onSubmit = async (values: ILoginRequest | IRegisterRequest) => {
-		setError('')
-		try {
-			const res = (await mutateAsync(values)) as {
-				error: string
-			}
-			if (res.error === 'CredentialsSignin') {
-				setError('Invalid email or password')
-			}
-		} catch (error) {
-			if (error instanceof AuthError) {
-				setError('Invalid email or password')
-			}
-
-			throw error
-		}
-
-		if (error) {
-			toast('Error when sign in', {
-				description: error,
-				position: 'top-right',
-				closeButton: true,
-				className: 'toast--error',
-			})
-		}
+		data.submitFn(values)
 	}
 	return (
 		<Card className="flex flex-col gap-y-4 px-12 py-8">

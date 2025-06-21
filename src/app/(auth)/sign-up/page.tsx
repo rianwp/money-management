@@ -2,10 +2,12 @@
 
 import AuthForm from '@/components/Auth/AuthForm'
 import AuthPage from '@/components/Auth/AuthPage'
-import { registerSchema } from '@/types/Auth/api'
+import useSignUp from '@/hooks/auth/useSignUp'
+import { IRegisterRequest, registerSchema } from '@/types/Auth/api'
 import { IAuthFormComponentData } from '@/types/Auth/authForm'
 
 const Page = () => {
+	const { mutateAsync, isPending } = useSignUp()
 	const componentData: IAuthFormComponentData = {
 		submitCta: 'Sign Up',
 		inputField: [
@@ -35,7 +37,7 @@ const Page = () => {
 			},
 		],
 		submitFn: async (values) => {
-			console.log(values)
+			return await mutateAsync(values as IRegisterRequest)
 		},
 		redirectCta: {
 			ctaText: 'Already have an account?',
@@ -47,7 +49,7 @@ const Page = () => {
 
 	return (
 		<AuthPage>
-			<AuthForm data={componentData} />
+			<AuthForm data={componentData} isPending={isPending} />
 		</AuthPage>
 	)
 }
