@@ -16,7 +16,7 @@ const globalFont = Roboto({
 })
 
 export const metadata: Metadata = {
-	title: 'Money Management',
+	title: 'Money Tracker',
 	description: '',
 }
 

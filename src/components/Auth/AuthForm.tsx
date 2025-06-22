@@ -76,7 +76,7 @@ const AuthForm = ({ data, isPending }: IAuthFormProps) => {
 
 			<div className="text-center text-sm">
 				<span>{data.redirectCta.ctaText} </span>
-				<Link href={data.redirectCta.href} className="font-medium">
+				<Link href={data.redirectCta.href} className="font-medium link">
 					{data.redirectCta.name}
 				</Link>
 			</div>

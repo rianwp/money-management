@@ -39,7 +39,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
 	pages: {
 		signIn: '/sign-in',
 		newUser: '/sign-up',
-		signOut: '/sign-out',
+		// signOut: '/sign-out',
 	},
 	session: { strategy: 'jwt' },
 	secret: process.env.JWT_SECRET || '',

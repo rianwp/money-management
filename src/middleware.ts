@@ -7,7 +7,7 @@ export default async function middleware(req: NextRequest) {
 	const session = await auth()
 	const pathname = req.nextUrl.pathname
 	if (protectedRoutes.includes(pathname) && !session) {
-		return NextResponse.redirect(new URL('/', req.url))
+		return NextResponse.redirect(new URL('/sign-in', req.url))
 	}
 }
 

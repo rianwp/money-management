@@ -1,9 +1,12 @@
+'use client'
+
 import {
 	Calendar,
 	Home,
 	Settings,
 	DollarSign,
 	ChartNoAxesColumnIncreasing,
+	LogOut,
 } from 'lucide-react'
 import {
 	Sidebar,
@@ -15,7 +18,9 @@ import {
 	SidebarMenu,
 	SidebarMenuItem,
 	SidebarMenuButton,
-} from './ui/sidebar'
+} from '../ui/sidebar'
+import Logo from '../Logo'
+import { signOut } from 'next-auth/react'
 
 const items = [
 	{
@@ -48,7 +53,10 @@ const items = [
 const AppSidebar = () => {
 	return (
 		<Sidebar>
-			<SidebarHeader className="font-bold">Money Management</SidebarHeader>
+			<SidebarHeader className="flex flex-row justify-start items-center h-16">
+				<Logo size="sm" />
+				<h1 className="font-bold text-lg">Money Tracker</h1>
+			</SidebarHeader>
 			<SidebarContent>
 				<SidebarGroup>
 					<SidebarGroupContent>
@@ -63,6 +71,14 @@ const AppSidebar = () => {
 									</SidebarMenuButton>
 								</SidebarMenuItem>
 							))}
+							<SidebarMenuItem>
+								<SidebarMenuButton asChild>
+									<button onClick={() => signOut()}>
+										<LogOut />
+										<span>Logout</span>
+									</button>
+								</SidebarMenuButton>
+							</SidebarMenuItem>
 						</SidebarMenu>
 					</SidebarGroupContent>
 				</SidebarGroup>
