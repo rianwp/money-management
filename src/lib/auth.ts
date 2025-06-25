@@ -1,4 +1,4 @@
-import NextAuth from 'next-auth'
+import NextAuth, { AuthError } from 'next-auth'
 import Credentials from 'next-auth/providers/credentials'
 import prisma from './db'
 import { verifyPassword } from './utils'
@@ -63,3 +63,9 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
 		},
 	},
 })
+
+export const getCurrentUser = async () => {
+	const session = await auth()
+	if (!session) throw new AuthError('Unauthorized')
+	return session.user
+}

@@ -50,6 +50,7 @@ model Category {
 model Transaction {
   id          Int             @id @default(autoincrement())
   amount      Decimal         @db.Decimal(12, 2) // Supports up to 9,999,999,999.99
+  title       String
   description String?
   type        TransactionType
   date        DateTime        @default(now()) // Transaction date (can be different from createdAt)
@@ -88,5 +89,5 @@ model UserSummary {
 // Enums
 enum TransactionType {
   INCOME
-  OUTCOME
+  EXPENSE
 }

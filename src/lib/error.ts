@@ -2,11 +2,13 @@ import { Prisma } from '@prisma/client'
 import { ZodError } from 'zod'
 import { NextResponse } from 'next/server'
 import { IApiResponse } from '@/types/apiResponse'
+import { AuthError } from 'next-auth'
 
 export type AppError =
 	| { type: 'VALIDATION'; error: ZodError }
 	| { type: 'DATABASE'; error: Prisma.PrismaClientKnownRequestError }
 	| { type: 'INTERNAL'; error: Error }
+	| { type: 'AUTH'; error: AuthError }
 
 const classifyError = (error: unknown): AppError => {
 	if (error instanceof ZodError) {
@@ -46,6 +48,18 @@ export const handleError = (rawError: unknown): NextResponse<IApiResponse> => {
 					},
 				},
 				{ status: 409 }
+			)
+
+		case 'AUTH':
+			return NextResponse.json(
+				{
+					success: false,
+					error: {
+						code: `AUTH_${error.error.name}`,
+						message: error.error.message,
+					},
+				},
+				{ status: 401 }
 			)
 
 		case 'INTERNAL':
