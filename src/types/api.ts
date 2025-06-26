@@ -13,9 +13,14 @@ export interface IApiParams<T = object> {
 	params: Promise<T>
 }
 
+export const baseQuerySchema = z.object({
+	sort: z.enum(['asc', 'desc']).optional(),
+	search: z.string().min(3, 'Search need 3 keyword').optional(),
+	page: z.number().int().positive('Page must a number').optional(),
+	limit: z.number().int().positive('Limit must a number').optional(),
+})
+
 export const updateSchema = <T extends z.ZodRawShape>(schema: z.ZodObject<T>) =>
-	schema
-		.partial()
-		.refine((data) => Object.keys(data).length > 0, {
-			message: 'At least one field must be provided for update',
-		})
+	schema.partial().refine((data) => Object.keys(data).length > 0, {
+		message: 'At least one field must be provided for update',
+	})

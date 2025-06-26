@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { updateSchema } from '../api'
+import { baseQuerySchema, updateSchema } from '../api'
 
 const TransactionTypeSchema = z.enum(['INCOME', 'EXPENSE'])
 
@@ -22,10 +22,8 @@ export const transactionCreateSchema = z.object({
 
 export const transactionUpdateSchema = updateSchema(transactionCreateSchema)
 
-export const transactionQuerySchema = z.object({
+export const transactionQuerySchema = baseQuerySchema.extend({
 	type: TransactionTypeSchema.optional(),
-	sort: z.enum(['asc', 'desc']).optional(),
-	search: z.string().min(3, 'Search need 3 keyword').optional(),
 })
 
 export type ITransactionCreateRequest = z.infer<typeof transactionCreateSchema>

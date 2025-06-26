@@ -27,8 +27,7 @@ model User {
 model Category {
   id          Int         @id @default(autoincrement())
   name        String
-  color       String      // Hex color code like #FF5733
-  icon        String?     // Optional icon identifier
+  icon        String?
   type        TransactionType
   description String?
   isActive    Boolean     @default(true)

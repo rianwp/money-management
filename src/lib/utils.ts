@@ -17,3 +17,15 @@ export const verifyPassword = async (
 ) => {
 	return await compare(plainPassword, hashedPassword)
 }
+
+export const formatDate = (date: Date): string => {
+	const day = date.getDate().toString().padStart(2, '0')
+	const month = (date.getMonth() + 1).toString().padStart(2, '0') // +1 because months are 0-indexed
+	const year = date.getFullYear()
+
+	return `${day}-${month}-${year}`
+}
+
+export const formatRupiah = (amount: number): string => {
+	return 'Rp' + amount.toLocaleString('id-ID')
+}
