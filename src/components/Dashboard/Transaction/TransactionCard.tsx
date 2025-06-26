@@ -11,6 +11,7 @@ interface ITransactionCardProps {
 	description: string
 	amount: number
 	date: Date
+	category: string
 }
 
 const TransactionCard = ({
@@ -38,7 +39,7 @@ const TransactionCard = ({
 	const getColor = () => typeStyle[type].text
 
 	return (
-		<Card className="p-4 flex justify-between items-center">
+		<Card className="p-4 flex justify-between items-center gap-x-2">
 			<div className="flex flex-row gap-x-4">
 				<div className={cn(getBackgroundIcon(), 'p-4 rounded-full h-10 w-10')}>
 					<DynamicIcon name={icon} />

@@ -9,7 +9,11 @@ export const transactionCreateSchema = z.object({
 		.number()
 		.int()
 		.positive('Category ID must be a positive integer'),
-	description: z.string().min(1, 'Description cannot be empty').optional(),
+	description: z
+		.string()
+		.min(1, 'Description cannot be empty')
+		.max(75, 'Description must less than 75 character')
+		.optional(),
 	type: TransactionTypeSchema,
 	date: z
 		.date({
