@@ -2,10 +2,10 @@ import { getCurrentUser } from '@/lib/auth'
 import prisma from '@/lib/db'
 import { handleError } from '@/lib/error'
 import { validateZod } from '@/lib/validation'
-import { IApiResponse } from '@/types/apiResponse'
+import { IApiResponse } from '@/types/api'
 import {
 	transactionQuerySchema,
-	transactionSchema,
+	transactionCreateSchema,
 } from '@/types/Transaction/api'
 import { User as UserAuth } from 'next-auth'
 import { NextRequest, NextResponse } from 'next/server'
@@ -18,7 +18,7 @@ export const POST = async (
 
 		const body = await req.json()
 		const { categoryId, title, type, date, description, amount } = validateZod(
-			transactionSchema,
+			transactionCreateSchema,
 			body
 		)
 

@@ -1,8 +1,9 @@
 import { z } from 'zod'
+import { updateSchema } from '../api'
 
 const TransactionTypeSchema = z.enum(['INCOME', 'EXPENSE'])
 
-export const transactionSchema = z.object({
+export const transactionCreateSchema = z.object({
 	title: z.string().min(1, 'Title is required'),
 	categoryId: z
 		.number()
@@ -19,11 +20,14 @@ export const transactionSchema = z.object({
 	amount: z.number().int().positive('Amount must be a positive integer'),
 })
 
+export const transactionUpdateSchema = updateSchema(transactionCreateSchema)
+
 export const transactionQuerySchema = z.object({
 	type: TransactionTypeSchema.optional(),
 	sort: z.enum(['asc', 'desc']).optional(),
 	search: z.string().min(3, 'Search need 3 keyword').optional(),
 })
 
-export type ITransactionRequest = z.infer<typeof transactionSchema>
+export type ITransactionCreateRequest = z.infer<typeof transactionCreateSchema>
+export type ITransactionUpdateRequest = z.infer<typeof transactionUpdateSchema>
 export type ITransactionQuery = z.infer<typeof transactionQuerySchema>

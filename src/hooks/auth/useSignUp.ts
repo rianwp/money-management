@@ -1,7 +1,7 @@
 'use client'
 
 import { axiosInstance } from '@/lib/fetch'
-import { IApiResponse } from '@/types/apiResponse'
+import { IApiResponse } from '@/types/api'
 import { IRegisterRequest } from '@/types/Auth/api'
 import { User } from '@prisma/client'
 import { useMutation } from '@tanstack/react-query'

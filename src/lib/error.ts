@@ -1,7 +1,7 @@
 import { Prisma } from '@prisma/client'
 import { ZodError } from 'zod'
 import { NextResponse } from 'next/server'
-import { IApiResponse } from '@/types/apiResponse'
+import { IApiResponse } from '@/types/api'
 import { AuthError } from 'next-auth'
 
 export type AppError =
