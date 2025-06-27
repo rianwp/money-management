@@ -5,7 +5,7 @@ import TransactionTable from '@/components/dashboard/Transaction/TransactionTabl
 const Page = () => {
 	return (
 		<div>
-			<TransactionTable limit={6} />
+			<TransactionTable limit={5} />
 		</div>
 	)
 }

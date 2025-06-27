@@ -4,10 +4,12 @@ import { axiosInstance } from '@/lib/fetch'
 import { IApiResponse } from '@/types/api'
 import { ITransactionCreateRequest } from '@/types/transaction/api'
 import { Transaction } from '@prisma/client'
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
 
 const useCreateTransaction = () => {
+	const queryClient = useQueryClient()
+
 	return useMutation({
 		mutationFn: async (payload: ITransactionCreateRequest) => {
 			const { data } = await axiosInstance.post('/transaction', payload)
@@ -16,6 +18,7 @@ const useCreateTransaction = () => {
 		},
 
 		onSuccess: (data: IApiResponse<Transaction>) => {
+			queryClient.invalidateQueries({ queryKey: ['getTransaction'] })
 			if (data.success) {
 				toast('Success add transaction', {
 					position: 'top-right',
