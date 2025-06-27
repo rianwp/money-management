@@ -1,9 +1,9 @@
 'use client'
 
-import AuthForm from '@/components/Auth/AuthForm'
-import AuthPage from '@/components/Auth/AuthPage'
-import { loginSchema } from '@/types/Auth/api'
-import { IAuthFormComponentData } from '@/types/Auth/authForm'
+import AuthForm from '@/components/auth/AuthForm'
+import AuthPage from '@/components/auth/AuthPage'
+import { loginSchema } from '@/types/auth/api'
+import { IAuthFormComponentData } from '@/types/auth/authForm'
 import useSignIn from '@/hooks/auth/useSignIn'
 
 const Page = () => {

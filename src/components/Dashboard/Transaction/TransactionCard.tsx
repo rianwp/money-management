@@ -1,5 +1,5 @@
 import { Card } from '@/components/ui/card'
-import DynamicIcon from '@/components/Utils/DynamicIcon'
+import DynamicIcon from '@/components/utils/DynamicIcon'
 import { cn, formatDate, formatRupiah } from '@/lib/utils'
 import { IconName } from '@/types/icon'
 import { TransactionType } from '@prisma/client'
@@ -24,12 +24,12 @@ const TransactionCard = ({
 }: ITransactionCardProps) => {
 	const typeStyle = {
 		INCOME: {
-			bg: 'bg-green-500',
+			bg: 'bg-green-500/80',
 			text: 'text-green-500',
 			prefix: '+',
 		},
 		EXPENSE: {
-			bg: 'bg-red-500',
+			bg: 'bg-red-500/80',
 			text: 'text-red-500',
 			prefix: '-',
 		},
@@ -39,10 +39,15 @@ const TransactionCard = ({
 	const getColor = () => typeStyle[type].text
 
 	return (
-		<Card className="p-4 flex justify-between items-center gap-x-2">
+		<Card className="p-4 flex flex-row justify-between items-center gap-x-2">
 			<div className="flex flex-row gap-x-4">
-				<div className={cn(getBackgroundIcon(), 'p-4 rounded-full h-10 w-10')}>
-					<DynamicIcon name={icon} />
+				<div
+					className={cn(
+						getBackgroundIcon(),
+						'p-1 rounded-full h-10 w-10 flex items-center justify-center'
+					)}
+				>
+					<DynamicIcon name={icon} className="w-6 h-6 text-white" />
 				</div>
 				<div className="flex flex-col">
 					<h3 className="font-semibold">{title}</h3>

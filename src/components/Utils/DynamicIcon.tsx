@@ -1,33 +1,35 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import { LucideIcon } from 'lucide-react'
+'use client'
+
+import dynamic from 'next/dynamic'
+import { FC, memo } from 'react'
+import { LucideProps } from 'lucide-react'
+import dynamicIconImports from 'lucide-react/dynamicIconImports'
 import { IconName } from '@/types/icon'
 
-interface IDynamicIconProps {
+interface IDynamicIconProps extends LucideProps {
 	name: IconName
-	size?: number
-	className?: string
 }
 
-const DynamicIcon = async ({
-	name,
-	size = 24,
-	className,
-}: IDynamicIconProps) => {
-	try {
-		const iconModule = await import('lucide-react')
-		const IconComponent = iconModule[
-			name as keyof typeof iconModule
-		] as LucideIcon
+const icons = Object.keys(dynamicIconImports) as IconName[]
 
-		if (!IconComponent) {
-			console.warn(`Icon ${name} not found`)
-			return null
-		}
+type ReactComponent = FC<{ className?: string }>
+const icons_components = {} as Record<IconName, ReactComponent>
 
-		return <IconComponent size={size} className={className} />
-	} catch (error) {
-		return null
-	}
+for (const name of icons) {
+	const NewIcon = dynamic(dynamicIconImports[name], {
+		ssr: false,
+	}) as ReactComponent
+	icons_components[name] = NewIcon
 }
+
+const DynamicIcon = memo(({ name, ...props }: IDynamicIconProps) => {
+	const Icon = icons_components[name]
+
+	if (!Icon) return null
+
+	return <Icon {...props} />
+})
+
+DynamicIcon.displayName = 'DynamicIcon'
 
 export default DynamicIcon

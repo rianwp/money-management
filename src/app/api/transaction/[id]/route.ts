@@ -3,7 +3,7 @@ import prisma from '@/lib/db'
 import { handleError } from '@/lib/error'
 import { validateZod } from '@/lib/validation'
 import { IApiParams, IApiResponse } from '@/types/api'
-import { transactionUpdateSchema } from '@/types/Transaction/api'
+import { transactionUpdateSchema } from '@/types/transaction/api'
 import { User as UserAuth } from 'next-auth'
 import { NextRequest, NextResponse } from 'next/server'
 

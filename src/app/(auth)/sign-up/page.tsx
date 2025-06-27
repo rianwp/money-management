@@ -1,10 +1,10 @@
 'use client'
 
-import AuthForm from '@/components/Auth/AuthForm'
-import AuthPage from '@/components/Auth/AuthPage'
+import AuthForm from '@/components/auth/AuthForm'
+import AuthPage from '@/components/auth/AuthPage'
 import useSignUp from '@/hooks/auth/useSignUp'
-import { IRegisterRequest, registerSchema } from '@/types/Auth/api'
-import { IAuthFormComponentData } from '@/types/Auth/authForm'
+import { IRegisterRequest, registerSchema } from '@/types/auth/api'
+import { IAuthFormComponentData } from '@/types/auth/authForm'
 
 const Page = () => {
 	const { mutateAsync, isPending } = useSignUp()

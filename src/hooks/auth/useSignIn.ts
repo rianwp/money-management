@@ -1,6 +1,6 @@
 'use client'
 
-import { ILoginRequest } from '@/types/Auth/api'
+import { ILoginRequest } from '@/types/auth/api'
 import { useMutation } from '@tanstack/react-query'
 import { signIn, SignInResponse } from 'next-auth/react'
 import { useRouter } from 'next/navigation'

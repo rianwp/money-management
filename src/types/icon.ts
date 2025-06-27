@@ -1,3 +1,3 @@
-import { icons } from 'lucide-react'
+import dynamicIconImports from 'lucide-react/dynamicIconImports'
 
-export type IconName = keyof typeof icons
+export type IconName = keyof typeof dynamicIconImports

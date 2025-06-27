@@ -2,7 +2,7 @@
 
 import { axiosInstance } from '@/lib/fetch'
 import { IApiResponse } from '@/types/api'
-import { IRegisterRequest } from '@/types/Auth/api'
+import { IRegisterRequest } from '@/types/auth/api'
 import { User } from '@prisma/client'
 import { useMutation } from '@tanstack/react-query'
 import { useRouter } from 'next/navigation'

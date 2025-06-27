@@ -97,6 +97,10 @@
 	.link {
 		@apply text-blue-600 hover:text-blue-700 transition duration-150;
 	}
+
+	.btn--flex {
+		@apply inline-flex items-center justify-center gap-x-2;
+	}
 }
 
 .dark {

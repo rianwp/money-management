@@ -1,8 +1,8 @@
 'use client'
 
-import { ILoginRequest, IRegisterRequest } from '@/types/Auth/api'
+import { ILoginRequest, IRegisterRequest } from '@/types/auth/api'
 import { Button } from '../ui/button'
-import { IAuthFormComponentData } from '@/types/Auth/authForm'
+import { IAuthFormComponentData } from '@/types/auth/authForm'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import {
@@ -16,7 +16,7 @@ import {
 import { Input } from '@/components/ui/input'
 import Link from 'next/link'
 import { Card } from '../ui/card'
-import ButtonLoader from '../Utils/ButtonLoader'
+import ButtonLoader from '../utils/ButtonLoader'
 import '@/assets/style/toast.css'
 
 interface IAuthFormProps {

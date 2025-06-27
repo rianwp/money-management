@@ -29,8 +29,8 @@ const items = [
 		icon: Home,
 	},
 	{
-		title: 'Income & Outcome',
-		url: '/income-and-outcome',
+		title: 'Income & Expense',
+		url: '/income-and-expense',
 		icon: DollarSign,
 	},
 	{

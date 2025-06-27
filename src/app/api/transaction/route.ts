@@ -6,7 +6,7 @@ import { IApiResponse } from '@/types/api'
 import {
 	transactionQuerySchema,
 	transactionCreateSchema,
-} from '@/types/Transaction/api'
+} from '@/types/transaction/api'
 import { User as UserAuth } from 'next-auth'
 import { NextRequest, NextResponse } from 'next/server'
 
@@ -15,6 +15,7 @@ export const POST = async (
 ): Promise<NextResponse<IApiResponse>> => {
 	try {
 		const { id: userId } = (await getCurrentUser()) as UserAuth
+		console.log(userId)
 
 		const body = await req.json()
 		const { categoryId, title, type, date, description, amount } = validateZod(
@@ -60,30 +61,35 @@ export const GET = async (
 			sort: searchParams.get('sort'),
 			type: searchParams.get('type'),
 			search: searchParams.get('search'),
+			limit: searchParams.get('limit'),
 		})
 
 		const transaction = await prisma.transaction.findMany({
 			where: {
 				userId: Number(userId),
 				type: query.type || undefined,
-				OR: [
-					{
-						title: {
-							contains: query.search,
-							mode: 'insensitive',
-						},
-					},
-					{
-						description: {
-							contains: query.search,
-							mode: 'insensitive',
-						},
-					},
-				],
+				// OR: [
+				// 	{
+				// 		title: {
+				// 			contains: query.search || undefined,
+				// 			mode: 'insensitive',
+				// 		},
+				// 	},
+				// 	{
+				// 		description: {
+				// 			contains: query.search || undefined,
+				// 			mode: 'insensitive',
+				// 		},
+				// 	},
+				// ],
+			},
+			include: {
+				category: true,
 			},
 			orderBy: {
 				date: query.sort || 'desc',
 			},
+			take: Number(query.limit) || undefined,
 		})
 
 		return NextResponse.json(

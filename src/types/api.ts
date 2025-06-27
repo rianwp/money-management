@@ -14,10 +14,20 @@ export interface IApiParams<T = object> {
 }
 
 export const baseQuerySchema = z.object({
-	sort: z.enum(['asc', 'desc']).optional(),
-	search: z.string().min(3, 'Search need 3 keyword').optional(),
-	page: z.number().int().positive('Page must a number').optional(),
-	limit: z.number().int().positive('Limit must a number').optional(),
+	sort: z.enum(['asc', 'desc']).nullable().optional(),
+	search: z.string().min(3, 'Search need 3 keyword').nullable().optional(),
+	page: z.coerce
+		.number()
+		.int()
+		.positive('Page must a number')
+		.nullable()
+		.optional(),
+	limit: z.coerce
+		.number()
+		.int()
+		.positive('Limit must a number')
+		.nullable()
+		.optional(),
 })
 
 export const updateSchema = <T extends z.ZodRawShape>(schema: z.ZodObject<T>) =>

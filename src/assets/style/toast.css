@@ -15,3 +15,15 @@
 		@apply !text-white;
 	}
 }
+
+.toast--success {
+	@apply !bg-green-500 !text-white !border-green-500;
+
+	[data-title] {
+		@apply !font-bold;
+	}
+
+	[data-description] {
+		@apply !text-white;
+	}
+}

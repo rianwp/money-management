@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import { Roboto } from 'next/font/google'
 import { cn } from '@/lib/utils'
 import Providers from '@/components/Providers'
-import CustomToaster from '@/components/Utils/CustomToaster'
+import CustomToaster from '@/components/utils/CustomToaster'
 import '@/assets/style/globals.css'
 
 interface IRootLayoutProps {

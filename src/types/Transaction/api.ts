@@ -27,7 +27,7 @@ export const transactionCreateSchema = z.object({
 export const transactionUpdateSchema = updateSchema(transactionCreateSchema)
 
 export const transactionQuerySchema = baseQuerySchema.extend({
-	type: TransactionTypeSchema.optional(),
+	type: TransactionTypeSchema.nullable().optional(),
 })
 
 export type ITransactionCreateRequest = z.infer<typeof transactionCreateSchema>

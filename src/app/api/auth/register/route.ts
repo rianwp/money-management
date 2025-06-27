@@ -3,7 +3,7 @@ import { handleError } from '@/lib/error'
 import { hashPassword } from '@/lib/utils'
 import { validateZod } from '@/lib/validation'
 import { IApiResponse } from '@/types/api'
-import { registerSchema } from '@/types/Auth/api'
+import { registerSchema } from '@/types/auth/api'
 import { Prisma } from '@prisma/client'
 import { NextRequest, NextResponse } from 'next/server'
 
