@@ -148,11 +148,16 @@ const ActionPopUp = ({ type }: IActionPopUpProps) => {
 									<FormItem>
 										<FormLabel>{item.label}</FormLabel>
 										<FormControl>
-											<Input
-												placeholder={item.placeholder}
-												type={item.type}
-												{...field}
-											/>
+											<div className="flex flex-row items-center gap-x-2">
+												{item.name === 'amount' ? (
+													<span className="text-gray-500">Rp</span>
+												) : null}
+												<Input
+													placeholder={item.placeholder}
+													type={item.type}
+													{...field}
+												/>
+											</div>
 										</FormControl>
 										<FormMessage />
 									</FormItem>
