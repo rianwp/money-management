@@ -1,17 +1,10 @@
-import { HTMLInputTypeAttribute } from 'react'
 import {
 	IRegisterRequest,
 	ILoginRequest,
 	loginSchema,
 	registerSchema,
 } from './api'
-
-interface IInputField {
-	name: string
-	label: string
-	placeholder: string
-	type?: HTMLInputTypeAttribute
-}
+import { IInputField } from '../form'
 
 export interface IAuthFormComponentData {
 	submitCta: string

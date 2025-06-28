@@ -1,7 +1,6 @@
 'use client'
 
 import { ILoginRequest, IRegisterRequest } from '@/types/auth/api'
-import { Button } from '../ui/button'
 import { IAuthFormComponentData } from '@/types/auth/authForm'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
@@ -17,7 +16,6 @@ import { Input } from '@/components/ui/input'
 import Link from 'next/link'
 import { Card } from '../ui/card'
 import ButtonLoader from '../utils/ButtonLoader'
-import '@/assets/style/toast.css'
 
 interface IAuthFormProps {
 	data: IAuthFormComponentData
@@ -62,15 +60,15 @@ const AuthForm = ({ data, isPending }: IAuthFormProps) => {
 							)}
 						/>
 					))}
-					<Button
+
+					<ButtonLoader
 						type="submit"
 						size="lg"
 						className="w-full bg-blue-600 hover:bg-blue-700"
-						disabled={isPending}
+						isLoading={isPending}
 					>
-						<span>{data.submitCta}</span>
-						<ButtonLoader className="ml-2" isLoading={isPending} />
-					</Button>
+						{data.submitCta}
+					</ButtonLoader>
 				</form>
 			</Form>
 

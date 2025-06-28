@@ -1,9 +1,15 @@
 import Action from './Action'
+import TransactionTable from './TransactionTable'
 
-const Transaction = () => {
+interface ITransactionProps {
+	limit?: number
+}
+
+const Transaction = ({ limit }: ITransactionProps) => {
 	return (
 		<section className="flex flex-col gap-y-8">
 			<Action />
+			<TransactionTable limit={limit} />
 		</section>
 	)
 }

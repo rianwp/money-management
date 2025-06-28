@@ -1,11 +1,11 @@
 'use client'
 
-import TransactionTable from '@/components/dashboard/Transaction/TransactionTable'
+import Transaction from '@/components/dashboard/Transaction'
 
 const Page = () => {
 	return (
 		<div>
-			<TransactionTable limit={5} />
+			<Transaction limit={5} />
 		</div>
 	)
 }

@@ -29,8 +29,8 @@ const TransactionCard = ({
 			prefix: '+',
 		},
 		EXPENSE: {
-			bg: 'bg-red-500/80',
-			text: 'text-red-500',
+			bg: 'bg-destructive/80',
+			text: 'text-destructive',
 			prefix: '-',
 		},
 	}
