@@ -24,12 +24,12 @@ const TransactionCard = ({
 }: ITransactionCardProps) => {
 	const typeStyle = {
 		INCOME: {
-			bg: 'bg-green-500/80',
-			text: 'text-green-500',
+			bg: 'bg-success/20',
+			text: 'text-success',
 			prefix: '+',
 		},
 		EXPENSE: {
-			bg: 'bg-destructive/80',
+			bg: 'bg-destructive/20',
 			text: 'text-destructive',
 			prefix: '-',
 		},
@@ -44,22 +44,23 @@ const TransactionCard = ({
 				<div
 					className={cn(
 						getBackgroundIcon(),
+						getColor(),
 						'p-1 rounded-full h-10 w-10 flex items-center justify-center'
 					)}
 				>
-					<DynamicIcon name={icon} className="w-6 h-6 text-white" />
+					<DynamicIcon name={icon} className="w-6 h-6" />
 				</div>
 				<div className="flex flex-col">
 					<h3 className="font-semibold">{title}</h3>
-					<p className="text-gray-500">{description}</p>
+					<p className="text-gray-500 text-sm">{description}</p>
 				</div>
 			</div>
-			<div className="flex flex-col">
-				<h4 className={cn(getColor(), 'font-bold')}>
+			<div className="flex flex-col ">
+				<h4 className={cn(getColor(), 'font-bold text-lg')}>
 					{typeStyle[type].prefix}
 					{formatRupiah(amount)}
 				</h4>
-				<p className="text-gray-500">{formatDate(date)}</p>
+				<p className="text-gray-500 text-sm">{formatDate(date)}</p>
 			</div>
 		</Card>
 	)

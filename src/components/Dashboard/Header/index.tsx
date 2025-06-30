@@ -7,7 +7,7 @@ import { SidebarTrigger } from '../../ui/sidebar'
 const Header = () => {
 	const isMobile = useIsMobile()
 	return (
-		<nav className="h-16 flex flex-col">
+		<nav className="h-16 flex flex-col bg-sidebar">
 			<div className="w-full h-full">
 				{isMobile ? <SidebarTrigger className="size-16 " /> : null}
 			</div>

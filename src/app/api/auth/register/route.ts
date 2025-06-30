@@ -23,6 +23,14 @@ export const POST = async (
 			},
 		})
 
+		await prisma.userSummary.create({
+			data: {
+				userId: user.id,
+				totalIncome: 0,
+				totalOutcome: 0,
+			},
+		})
+
 		return NextResponse.json(
 			{
 				success: true,

@@ -1,4 +1,4 @@
-import { QueryClient } from '@tanstack/react-query'
+import { isServer, QueryClient } from '@tanstack/react-query'
 import axios from 'axios'
 
 export const queryClient = new QueryClient({
@@ -8,6 +8,21 @@ export const queryClient = new QueryClient({
 		},
 	},
 })
+
+const makeQueryClient = () => {
+	return queryClient
+}
+
+let browserQueryClient: QueryClient | undefined = undefined
+
+export const getQueryClient = () => {
+	if (isServer) {
+		return makeQueryClient()
+	} else {
+		if (!browserQueryClient) browserQueryClient = makeQueryClient()
+		return browserQueryClient
+	}
+}
 
 export const axiosInstance = axios.create({
 	baseURL: '/api',

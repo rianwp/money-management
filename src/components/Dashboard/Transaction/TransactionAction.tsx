@@ -1,7 +1,7 @@
 import { Card, CardAction, CardContent } from '@/components/ui/card'
 import ActionPopUp from './ActionPopUp'
 
-const Action = () => {
+const TransactionAction = () => {
 	return (
 		<Card>
 			<CardContent className="flex flex-row justify-between items-center gap-x-2">
@@ -15,4 +15,4 @@ const Action = () => {
 	)
 }
 
-export default Action
+export default TransactionAction

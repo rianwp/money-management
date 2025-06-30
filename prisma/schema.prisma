@@ -73,15 +73,13 @@ model UserSummary {
   id            Int     @id @default(autoincrement())
   totalIncome   Decimal @default(0) @db.Decimal(12, 2)
   totalOutcome  Decimal @default(0) @db.Decimal(12, 2)
-  currentMonth  Int
-  currentYear   Int
   lastUpdated   DateTime @updatedAt
 
   // Foreign Keys
-  userId Int  @unique
+  userId Int
   user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@unique([userId, currentMonth, currentYear])
+  @@unique([userId])
   @@map("user_summaries")
 }
 

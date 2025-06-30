@@ -35,6 +35,26 @@ export const POST = async (
 			},
 		})
 
+		const updateSummary =
+			type === 'INCOME'
+				? {
+						totalIncome: {
+							increment: amount,
+						},
+				  }
+				: {
+						totalOutcome: {
+							increment: amount,
+						},
+				  }
+
+		await prisma.userSummary.update({
+			where: {
+				userId: Number(userId),
+			},
+			data: updateSummary,
+		})
+
 		return NextResponse.json(
 			{
 				success: true,

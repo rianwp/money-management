@@ -21,19 +21,79 @@ export const PUT = async (
 			body
 		)
 
-		const transaction = await prisma.transaction.update({
-			where: {
-				id: Number(id),
-				userId: Number(userId),
-			},
-			data: {
-				amount,
-				title,
-				description,
-				type,
-				date,
-				categoryId,
-			},
+		const transaction = await prisma.$transaction(async (tx) => {
+			const originalTransaction = await tx.transaction.findUnique({
+				where: {
+					id: Number(id),
+					userId: Number(userId),
+				},
+				select: {
+					amount: true,
+					type: true,
+				},
+			})
+
+			if (!originalTransaction) {
+				throw new Error('Transaction not found')
+			}
+
+			// Update the transaction
+			const updatedTransaction = await tx.transaction.update({
+				where: {
+					id: Number(id),
+					userId: Number(userId),
+				},
+				data: {
+					amount,
+					title,
+					description,
+					type,
+					date,
+					categoryId,
+				},
+			})
+
+			// Calculate and apply summary changes
+			let incomeChange = 0
+			let outcomeChange = 0
+
+			if (originalTransaction.type === 'INCOME') {
+				incomeChange -= Number(originalTransaction.amount)
+			} else {
+				outcomeChange -= Number(originalTransaction.amount)
+			}
+
+			if (type === 'INCOME') {
+				incomeChange += Number(amount)
+			} else {
+				outcomeChange += Number(amount)
+			}
+
+			if (incomeChange !== 0 || outcomeChange !== 0) {
+				const updateIncome =
+					incomeChange !== 0
+						? {
+								totalIncome: { increment: incomeChange },
+						  }
+						: {}
+
+				const updateOutcome =
+					outcomeChange !== 0
+						? {
+								totalOutcome: { increment: outcomeChange },
+						  }
+						: {}
+
+				await tx.userSummary.update({
+					where: { userId: Number(userId) },
+					data: {
+						...updateIncome,
+						...updateOutcome,
+					},
+				})
+			}
+
+			return updatedTransaction
 		})
 
 		return NextResponse.json(

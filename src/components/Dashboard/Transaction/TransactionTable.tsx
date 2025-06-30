@@ -21,7 +21,9 @@ const TransactionTable = ({ limit }: ITransactionTableProps) => {
 					<CardContent className="flex justify-between items-center gap-x-2">
 						<div className="flex flex-col">
 							<h2 className="font-semibold text-2xl">Recent Transactions</h2>
-							<p className="text-gray-500">Your latest financial activity</p>
+							<p className="text-gray-500 text-sm">
+								Your latest financial activity
+							</p>
 						</div>
 						<div className="flex flex-row gap-x-4">
 							<ButtonLoader
