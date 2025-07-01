@@ -44,13 +44,13 @@ const BalanceCard = () => {
 						</div>
 					</div>
 					<div className="flex flex-row items-center gap-x-2">
-						<LucideArrowDownLeft className="size-5 text-red-300" />
-						<div className="flex flex-col">
+						<div className="flex flex-col items-end">
 							<p className="text-sm ">Expense</p>
 							<p className="font-semibold">
 								{defaultBlur(data?.data?.totalOutcome)}
 							</p>
 						</div>
+						<LucideArrowDownLeft className="size-5 text-red-300" />
 					</div>
 				</div>
 			</CardContent>
