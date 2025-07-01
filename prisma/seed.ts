@@ -344,8 +344,6 @@ async function main() {
 				userId: user.id,
 				totalIncome: totalIncome,
 				totalOutcome: totalOutcome,
-				currentMonth,
-				currentYear,
 			},
 		})
 	}

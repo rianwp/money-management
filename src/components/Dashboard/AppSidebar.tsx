@@ -1,11 +1,11 @@
 'use client'
 
 import {
-	Calendar,
+	// Calendar,
 	Home,
-	Settings,
+	// Settings,
 	DollarSign,
-	ChartNoAxesColumnIncreasing,
+	// ChartNoAxesColumnIncreasing,
 	LogOut,
 } from 'lucide-react'
 import {
@@ -33,21 +33,21 @@ const items = [
 		url: '/income-and-expense',
 		icon: DollarSign,
 	},
-	{
-		title: 'Scheduling',
-		url: '/scheduling',
-		icon: Calendar,
-	},
-	{
-		title: 'Market & Investment',
-		url: '/market-and-investment',
-		icon: ChartNoAxesColumnIncreasing,
-	},
-	{
-		title: 'Settings',
-		url: '/settings',
-		icon: Settings,
-	},
+	// {
+	// 	title: 'Scheduling',
+	// 	url: '/scheduling',
+	// 	icon: Calendar,
+	// },
+	// {
+	// 	title: 'Market & Investment',
+	// 	url: '/market-and-investment',
+	// 	icon: ChartNoAxesColumnIncreasing,
+	// },
+	// {
+	// 	title: 'Settings',
+	// 	url: '/settings',
+	// 	icon: Settings,
+	// },
 ]
 
 const AppSidebar = () => {

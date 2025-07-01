@@ -9,7 +9,7 @@ export const GET = async (): Promise<NextResponse<IApiResponse>> => {
 	try {
 		const { id: userId } = (await getCurrentUser()) as UserAuth
 
-		const summary = await prisma.userSummary.findFirstOrThrow({
+		const balance = await prisma.userSummary.findFirstOrThrow({
 			where: {
 				userId: Number(userId),
 			},
@@ -19,9 +19,9 @@ export const GET = async (): Promise<NextResponse<IApiResponse>> => {
 			{
 				success: true,
 				data: {
-					...summary,
+					...balance,
 					totalBalance:
-						Number(summary.totalIncome) - Number(summary.totalOutcome),
+						Number(balance.totalIncome) - Number(balance.totalOutcome),
 				},
 			},
 			{

@@ -1,5 +1,6 @@
 import { compare, hash } from 'bcryptjs'
 import { clsx, type ClassValue } from 'clsx'
+import { format } from 'date-fns'
 import { twMerge } from 'tailwind-merge'
 
 export const cn = (...inputs: ClassValue[]) => {
@@ -19,12 +20,7 @@ export const verifyPassword = async (
 }
 
 export const formatDate = (rawDate: Date): string => {
-	const date = new Date(rawDate)
-	const day = date.getDate().toString().padStart(2, '0')
-	const month = (date.getMonth() + 1).toString().padStart(2, '0') // +1 because months are 0-indexed
-	const year = date.getFullYear()
-
-	return `${day}-${month}-${year}`
+	return format(rawDate, 'dd-MM-yyyy')
 }
 
 export const formatRupiah = (amount: number): string => {

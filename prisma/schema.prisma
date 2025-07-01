@@ -25,14 +25,15 @@ model User {
 }
 
 model Category {
-  id          Int         @id @default(autoincrement())
-  name        String
-  icon        String?
-  type        TransactionType
-  description String?
-  isActive    Boolean     @default(true)
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
+  id            Int         @id @default(autoincrement())
+  name          String
+  icon          String?
+  type          TransactionType
+  description   String?
+  isActive      Boolean     @default(true)
+  monthlyTarget Int         @default(0)   
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
 
   // Foreign Keys
   userId Int

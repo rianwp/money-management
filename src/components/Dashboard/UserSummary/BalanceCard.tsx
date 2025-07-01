@@ -1,6 +1,6 @@
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
-import useGetUserSummary from '@/hooks/user/useGetUserSummary'
+import useGetUserBalance from '@/hooks/user/useGetUserBalance'
 import { formatRupiah } from '@/lib/utils'
 import { Decimal } from '@prisma/client/runtime/library'
 import {
@@ -13,16 +13,17 @@ import { useState } from 'react'
 
 const BalanceCard = () => {
 	const [blur, setBlur] = useState(false)
-	const { data } = useGetUserSummary()
+	const { data, isLoading } = useGetUserBalance()
 
 	const handleBlur = () => {
 		setBlur((blur) => !blur)
 	}
 
 	const defaultBlur = (data?: number | Decimal) =>
-		blur ? '***' : formatRupiah(Number(data || 0))
+		blur || isLoading ? '***' : formatRupiah(Number(data || 0))
+
 	return (
-		<Card className="bg-gradient-to-r from-blue-600 to-purple-600">
+		<Card className="bg-gradient-to-r from-blue-600 to-purple-600 w-full h-full">
 			<CardContent className="flex flex-col gap-y-3 text-white">
 				<div className="flex flex-row gap-x-2 justify-between items-center">
 					<p className="text-sm ">Total Balance</p>

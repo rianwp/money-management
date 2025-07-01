@@ -12,7 +12,7 @@ const Layout = async ({ children }: ILayoutProps) => {
 			<AppSidebar />
 			<main className="w-full bg-sidebar">
 				<Header />
-				<div className="p-4 min-h-full-navbar">{children}</div>
+				<div className="p-8 min-h-full-navbar">{children}</div>
 			</main>
 		</SidebarProvider>
 	)
