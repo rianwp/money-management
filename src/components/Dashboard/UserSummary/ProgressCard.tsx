@@ -3,23 +3,39 @@ import { Progress } from '@/components/ui/progress'
 import { Skeleton } from '@/components/ui/skeleton'
 
 interface IProgressCardProps {
-	title: string
-	value: string
 	progress: number
-	description: string
-	textColor?: string
 	progressColor?: string
 	isLoading: boolean
+	children: React.ReactNode
 }
 
+const ProgressCardTitle = ({ children }: { children: React.ReactNode }) => (
+	<h2 className="text-sm text-muted-foreground">{children}</h2>
+)
+
+const ProgressCardValue = ({
+	children,
+	color,
+}: {
+	children: React.ReactNode
+	color?: string
+}) => (
+	<h3 className="text-2xl font-bold" style={{ color: color || undefined }}>
+		{children}
+	</h3>
+)
+
+const ProgressCardDescription = ({
+	children,
+}: {
+	children: React.ReactNode
+}) => <p className="text-sm text-muted-foreground">{children}</p>
+
 const ProgressCard = ({
-	title,
-	value,
 	progress,
-	description,
 	progressColor,
-	textColor,
 	isLoading,
+	children,
 }: IProgressCardProps) => {
 	if (isLoading)
 		return (
@@ -35,18 +51,16 @@ const ProgressCard = ({
 	return (
 		<Card className="w-full h-full">
 			<CardContent className="flex flex-col gap-y-2">
-				<h2 className="text-sm text-muted-foreground">{title}</h2>
-				<h3
-					className="text-2xl font-bold"
-					style={{ color: textColor || undefined }}
-				>
-					{value}
-				</h3>
-				<p className="text-sm text-muted-foreground">{description}</p>
+				{children}
 				<Progress value={progress} indicatorColor={progressColor} />
 			</CardContent>
 		</Card>
 	)
 }
 
-export default ProgressCard
+export {
+	ProgressCardTitle,
+	ProgressCardValue,
+	ProgressCardDescription,
+	ProgressCard,
+}
