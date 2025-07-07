@@ -5,9 +5,14 @@ import AuthPage from '@/components/auth/AuthPage'
 import useSignUp from '@/hooks/auth/useSignUp'
 import { IRegisterRequest, registerSchema } from '@/types/auth/api'
 import { IAuthFormComponentData } from '@/types/auth/authForm'
+import { useMemo } from 'react'
 
 const Page = () => {
-	const { mutateAsync, isPending } = useSignUp()
+	const { mutateAsync, status } = useSignUp()
+	const isPending = useMemo(
+		() => status !== 'error' && status !== 'idle',
+		[status]
+	)
 	const componentData: IAuthFormComponentData = {
 		submitCta: 'Sign Up',
 		inputField: [

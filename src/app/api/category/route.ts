@@ -3,7 +3,7 @@ import prisma from '@/lib/db'
 import { handleError } from '@/lib/error'
 import { validateZod } from '@/lib/validation'
 import { IApiResponse } from '@/types/api'
-import { categoryQuerySchema } from '@/types/category/api'
+import { categoryCreateSchema, categoryQuerySchema } from '@/types/category/api'
 import { User as UserAuth } from 'next-auth'
 import { NextRequest, NextResponse } from 'next/server'
 
@@ -48,6 +48,44 @@ export const GET = async (
 				createdAt: query.sort || 'desc',
 			},
 			take: Number(query.limit) || undefined,
+		})
+
+		return NextResponse.json(
+			{
+				success: true,
+				data: category,
+			},
+			{
+				status: 200,
+			}
+		)
+	} catch (error) {
+		return handleError(error)
+	}
+}
+
+export const POST = async (
+	req: NextRequest
+): Promise<NextResponse<IApiResponse>> => {
+	try {
+		const { id: userId } = (await getCurrentUser()) as UserAuth
+		console.log(userId)
+
+		const body = await req.json()
+		const { name, type, description, icon, monthlyTarget } = validateZod(
+			categoryCreateSchema,
+			body
+		)
+
+		const category = await prisma.category.create({
+			data: {
+				name,
+				type,
+				description,
+				icon,
+				monthlyTarget,
+				userId: Number(userId),
+			},
 		})
 
 		return NextResponse.json(

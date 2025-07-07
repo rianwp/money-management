@@ -5,9 +5,14 @@ import AuthPage from '@/components/auth/AuthPage'
 import { loginSchema } from '@/types/auth/api'
 import { IAuthFormComponentData } from '@/types/auth/authForm'
 import useSignIn from '@/hooks/auth/useSignIn'
+import { useMemo } from 'react'
 
 const Page = () => {
-	const { mutateAsync, isPending } = useSignIn()
+	const { mutateAsync, status } = useSignIn()
+	const isPending = useMemo(
+		() => status !== 'error' && status !== 'idle',
+		[status]
+	)
 	const componentData: IAuthFormComponentData = {
 		submitCta: 'Sign In',
 		inputField: [

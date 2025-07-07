@@ -76,6 +76,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
 			return token
 		},
 	},
+	trustHost: true,
 })
 
 export const getCurrentUser = async () => {
