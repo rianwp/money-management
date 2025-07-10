@@ -1,4 +1,3 @@
-import { useEffect, useRef, useState, useCallback } from 'react'
 import { Card, CardContent } from '@/components/ui/card'
 import useGetTransaction from '@/hooks/transaction/useGetTransaction'
 import { Download, Filter } from 'lucide-react'
@@ -9,6 +8,7 @@ import ButtonLoader from '@/components/utils/ButtonLoader'
 import { buttonVariants } from '@/components/ui/button'
 import Link from 'next/link'
 import { Prisma } from '@prisma/client'
+import { useLazyLoad } from '@/hooks/useLazyLoad'
 
 interface ITransactionTableProps {
 	limit: number | 'lazy'
@@ -23,65 +23,18 @@ const TransactionTable = ({
 	showExtension = false,
 	showMore = false,
 }: ITransactionTableProps) => {
-	const [page, setPage] = useState(1)
-	const [transactions, setTransactions] = useState<
-		Prisma.TransactionGetPayload<{ include: { category: true } }>[]
-	>([])
-	const [hasMore, setHasMore] = useState(true)
-
-	const observerRef = useRef<HTMLDivElement | null>(null)
-	const staticMode = typeof limit === 'number'
-
-	const queryParams = staticMode ? { limit } : { page, limit: PAGE_SIZE }
-
-	const { data, isLoading } = useGetTransaction(queryParams)
-
-	useEffect(() => {
-		const newData = data?.data ?? []
-
-		if (staticMode) {
-			setTransactions(newData)
-		} else {
-			if (page === 1) {
-				setTransactions(newData)
-			} else {
-				setTransactions((prev) => [...prev, ...newData])
-			}
-
-			if (newData.length < PAGE_SIZE) {
-				setHasMore(false)
-			} else {
-				setHasMore(true)
-			}
-		}
-	}, [data, staticMode, page])
-
-	const handleObserver = useCallback(
-		(entries: IntersectionObserverEntry[]) => {
-			const target = entries[0]
-			if (target.isIntersecting && hasMore && !isLoading && !staticMode) {
-				setPage((prev) => prev + 1)
-			}
-		},
-		[hasMore, isLoading, staticMode]
-	)
-
-	useEffect(() => {
-		if (!staticMode) {
-			const option = {
-				root: null,
-				rootMargin: '0px',
-				threshold: 1.0,
-			}
-
-			const observer = new IntersectionObserver(handleObserver, option)
-			if (observerRef.current) observer.observe(observerRef.current)
-
-			return () => {
-				if (observerRef.current) observer.unobserve(observerRef.current)
-			}
-		}
-	}, [handleObserver, staticMode])
+	const {
+		data: transactions,
+		isLoading,
+		observerRef,
+		staticMode,
+	} = useLazyLoad<
+		Prisma.TransactionGetPayload<{ include: { category: true } }>
+	>({
+		useQueryHook: useGetTransaction,
+		limit: limit === 'lazy' ? undefined : limit,
+		pageSize: PAGE_SIZE,
+	})
 
 	return (
 		<Card className="flex flex-col">
@@ -125,7 +78,7 @@ const TransactionTable = ({
 						type={item.type}
 					/>
 				))}
-				{!staticMode && <div ref={observerRef} className="-mt-4" />}
+				{!staticMode ? <div ref={observerRef} className="-mt-4" /> : null}
 				{isLoading
 					? Array.from({ length: 5 }).map((_, i) => (
 							<Skeleton key={i} className="h-16 w-full rounded-md" />
