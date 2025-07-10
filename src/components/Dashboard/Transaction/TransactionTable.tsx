@@ -125,7 +125,7 @@ const TransactionTable = ({
 						type={item.type}
 					/>
 				))}
-				{!staticMode && <div ref={observerRef} />}
+				{!staticMode && <div ref={observerRef} className="-mt-4" />}
 				{isLoading
 					? Array.from({ length: 5 }).map((_, i) => (
 							<Skeleton key={i} className="h-16 w-full rounded-md" />
