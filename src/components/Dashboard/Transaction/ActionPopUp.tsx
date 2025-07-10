@@ -12,7 +12,7 @@ import {
 } from '@/components/ui/dialog'
 import ButtonLoader from '@/components/utils/ButtonLoader'
 import { TransactionType } from '@prisma/client'
-import { MinusCircle, PlusCircle } from 'lucide-react'
+import { MinusCircle, Plus, PlusCircle } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
@@ -42,6 +42,7 @@ import useGetCategory from '@/hooks/category/useGetCategory'
 import SectionLoader from '@/components/utils/SectionLoader'
 import useCreateTransaction from '@/hooks/transaction/useCreateTransaction'
 import { useEffect } from 'react'
+import AddCategoryDialog from './AddCategoryDialog'
 
 interface IActionPopUpProps {
 	type: TransactionType
@@ -191,6 +192,11 @@ const ActionPopUp = ({ type }: IActionPopUpProps) => {
 											) : (
 												<SectionLoader />
 											)}
+											<AddCategoryDialog type={type}>
+												<Button className="w-full" size="sm" variant="outline">
+													<Plus />
+												</Button>
+											</AddCategoryDialog>
 										</SelectContent>
 									</Select>
 									<FormMessage />

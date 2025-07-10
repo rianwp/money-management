@@ -20,7 +20,12 @@ export const GET = async (
 			type: searchParams.get('type'),
 			search: searchParams.get('search'),
 			limit: searchParams.get('limit'),
+			page: searchParams.get('page'),
 		})
+
+		const page = Number(query.page) || 1
+		const limit = Number(query.limit) || 10
+		const skip = (page - 1) * limit
 
 		const category = await prisma.category.findMany({
 			where: {
@@ -47,7 +52,8 @@ export const GET = async (
 			orderBy: {
 				createdAt: query.sort || 'desc',
 			},
-			take: Number(query.limit) || undefined,
+			skip,
+			take: limit,
 		})
 
 		return NextResponse.json(
@@ -69,7 +75,6 @@ export const POST = async (
 ): Promise<NextResponse<IApiResponse>> => {
 	try {
 		const { id: userId } = (await getCurrentUser()) as UserAuth
-		console.log(userId)
 
 		const body = await req.json()
 		const { name, type, description, icon, monthlyTarget } = validateZod(

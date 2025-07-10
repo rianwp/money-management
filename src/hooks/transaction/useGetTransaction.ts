@@ -22,7 +22,6 @@ const useGetTransaction = (query: ITransactionQuery = {}) => {
 			const { data } = await axiosInstance.get('/transaction', {
 				params: query,
 			})
-
 			return data
 		},
 	})

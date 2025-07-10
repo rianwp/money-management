@@ -15,7 +15,6 @@ export const POST = async (
 ): Promise<NextResponse<IApiResponse>> => {
 	try {
 		const { id: userId } = (await getCurrentUser()) as UserAuth
-		console.log(userId)
 
 		const body = await req.json()
 		const { categoryId, title, type, date, description, amount } = validateZod(
@@ -81,8 +80,13 @@ export const GET = async (
 			sort: searchParams.get('sort'),
 			type: searchParams.get('type'),
 			search: searchParams.get('search'),
+			page: searchParams.get('page'),
 			limit: searchParams.get('limit'),
 		})
+
+		const page = Number(query.page) || 1
+		const limit = Number(query.limit) || 10
+		const skip = (page - 1) * limit
 
 		const transaction = await prisma.transaction.findMany({
 			where: {
@@ -112,7 +116,8 @@ export const GET = async (
 			orderBy: {
 				date: query.sort || 'desc',
 			},
-			take: Number(query.limit) || undefined,
+			skip,
+			take: limit,
 		})
 
 		return NextResponse.json(
