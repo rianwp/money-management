@@ -10,12 +10,12 @@ interface UseLazyLoadOptions<TQuery, TData> {
 	initialQuery?: Partial<TQuery>
 }
 
-export function useLazyLoad<TData, TQuery = any>({
+const useLazyLoad = <TData, TQuery = any>({
 	useQueryHook,
 	limit,
 	pageSize = 10,
 	initialQuery = {},
-}: UseLazyLoadOptions<TQuery, TData>) {
+}: UseLazyLoadOptions<TQuery, TData>) => {
 	const [page, setPage] = useState(1)
 	const [items, setItems] = useState<TData[]>([])
 	const [hasMore, setHasMore] = useState(true)
@@ -80,3 +80,5 @@ export function useLazyLoad<TData, TQuery = any>({
 		staticMode,
 	}
 }
+
+export default useLazyLoad

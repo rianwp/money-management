@@ -8,7 +8,7 @@ import ButtonLoader from '@/components/utils/ButtonLoader'
 import { buttonVariants } from '@/components/ui/button'
 import Link from 'next/link'
 import { Prisma } from '@prisma/client'
-import { useLazyLoad } from '@/hooks/useLazyLoad'
+import useLazyLoad from '@/hooks/useLazyLoad'
 
 interface ITransactionTableProps {
 	limit: number | 'lazy'
