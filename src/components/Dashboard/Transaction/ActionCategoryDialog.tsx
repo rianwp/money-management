@@ -38,7 +38,7 @@ import DynamicIcon from '@/components/utils/DynamicIcon'
 import { IconName } from '@/types/icon'
 import { TransactionType } from '@prisma/client'
 
-interface IAddCategoryDialogProps {
+interface IActionCategoryDialogProps {
 	type: TransactionType
 	children: React.ReactNode
 }
@@ -108,7 +108,10 @@ const iconNames: IconName[] = [
 	'zap-off',
 ]
 
-const AddCategoryDialog = ({ type, children }: IAddCategoryDialogProps) => {
+const ActionCategoryDialog = ({
+	type,
+	children,
+}: IActionCategoryDialogProps) => {
 	const [open, setOpen] = useState(false)
 	const { mutateAsync, isPending } = useCreateCategory()
 	const form = useForm<ICategoryCreateRequest>({
@@ -125,7 +128,7 @@ const AddCategoryDialog = ({ type, children }: IAddCategoryDialogProps) => {
 	const onSubmit = async (values: ICategoryCreateRequest) => {
 		await mutateAsync({
 			...values,
-			type, // always use the prop value
+			type,
 			monthlyTarget: values.monthlyTarget
 				? Number(values.monthlyTarget)
 				: undefined,
@@ -260,4 +263,4 @@ const AddCategoryDialog = ({ type, children }: IAddCategoryDialogProps) => {
 	)
 }
 
-export default AddCategoryDialog
+export default ActionCategoryDialog

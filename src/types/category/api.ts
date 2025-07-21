@@ -12,7 +12,11 @@ export const categoryCreateSchema = z.object({
 		.min(1, 'Description cannot be empty')
 		.max(75, 'Description must less than 75 character')
 		.optional(),
-	monthlyTarget: z.number().int().positive('Monthly target must be a positive integer').optional(),
+	monthlyTarget: z
+		.number()
+		.int()
+		.positive('Monthly target must be a positive integer')
+		.optional(),
 })
 
 export const categoryUpdateSchema = updateSchema(categoryCreateSchema)

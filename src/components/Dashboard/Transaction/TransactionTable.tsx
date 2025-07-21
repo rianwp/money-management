@@ -9,6 +9,9 @@ import { buttonVariants } from '@/components/ui/button'
 import Link from 'next/link'
 import { Prisma } from '@prisma/client'
 import useLazyLoad from '@/hooks/useLazyLoad'
+import DeleteConfirmationAlert from '../DeleteConfirmationAlert'
+import useDeleteTransaction from '@/hooks/transaction/useDeleteTransaction'
+import ActionTransactionDialog from './ActionTransactionDialog'
 
 interface ITransactionTableProps {
 	limit: number | 'lazy'
@@ -35,6 +38,12 @@ const TransactionTable = ({
 		limit: limit === 'lazy' ? undefined : limit,
 		pageSize: PAGE_SIZE,
 	})
+
+	const { mutate: deleteTransaction } = useDeleteTransaction()
+
+	const handleDelete = (id: number) => {
+		deleteTransaction({ id })
+	}
 
 	return (
 		<Card className="flex flex-col">
@@ -67,16 +76,37 @@ const TransactionTable = ({
 
 			<CardContent className="pt-0 flex flex-col gap-y-4">
 				{transactions.map((item, index) => (
-					<TransactionCard
+					<div
 						key={index}
-						amount={Number(item.amount)}
-						category={item.category.name}
-						icon={item.category.icon as IconName}
-						date={item.date}
-						description={item.description || ''}
-						title={item.title}
-						type={item.type}
-					/>
+						className="flex flex-row w-full gap-x-4 items-center"
+					>
+						<TransactionCard
+							amount={Number(item.amount)}
+							category={item.category.name}
+							icon={item.category.icon as IconName}
+							date={item.date}
+							description={item.description || ''}
+							title={item.title}
+							type={item.type}
+						/>
+
+						{showExtension ? (
+							<ActionTransactionDialog
+								defaultValues={{
+									amount: Number(item.amount),
+									id: item.id,
+									date: new Date(item.date),
+									categoryId: item.categoryId,
+									description: item.description || '',
+									title: item.title,
+								}}
+								type={item.type}
+							/>
+						) : null}
+						{showExtension ? (
+							<DeleteConfirmationAlert onDelete={() => handleDelete(item.id)} />
+						) : null}
+					</div>
 				))}
 				{!staticMode ? <div ref={observerRef} className="-mt-4" /> : null}
 				{isLoading

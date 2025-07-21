@@ -1,21 +1,17 @@
 'use client'
 
 import { axiosInstance } from '@/lib/fetch'
-import { IApiResponse } from '@/types/api'
-import { ITransactionUpdateRequest } from '@/types/transaction/api'
+import { IApiResponse, IDeleteUniversal } from '@/types/api'
 import { Transaction } from '@prisma/client'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
 
-const useUpdateTransaction = () => {
+const useDeleteTransaction = () => {
 	const queryClient = useQueryClient()
 
 	return useMutation({
-		mutationFn: async (payload: ITransactionUpdateRequest) => {
-			const { data } = await axiosInstance.put(
-				`/transaction/${payload.id}`,
-				payload
-			)
+		mutationFn: async (payload: IDeleteUniversal) => {
+			const { data } = await axiosInstance.delete(`/transaction/${payload.id}`)
 
 			return data
 		},
@@ -23,7 +19,7 @@ const useUpdateTransaction = () => {
 		onSuccess: (data: IApiResponse<Transaction>) => {
 			if (data.success) {
 				queryClient.invalidateQueries({ queryKey: ['getTransaction'] })
-				toast('Success update transaction', {
+				toast('Success delete transaction', {
 					position: 'top-right',
 					closeButton: true,
 					className: 'toast--success',
@@ -32,7 +28,7 @@ const useUpdateTransaction = () => {
 		},
 		onError: (error: IApiResponse) => {
 			if (!error.success) {
-				toast('Error when update transaction', {
+				toast('Error when delete transaction', {
 					description: error.error?.message,
 					position: 'top-right',
 					closeButton: true,
@@ -43,4 +39,4 @@ const useUpdateTransaction = () => {
 	})
 }
 
-export default useUpdateTransaction
+export default useDeleteTransaction

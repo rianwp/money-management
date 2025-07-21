@@ -8,10 +8,10 @@ import { IAuthFormComponentData } from '@/types/auth/authForm'
 import { useMemo } from 'react'
 
 const Page = () => {
-	const { mutateAsync, status } = useSignUp()
+	const { mutateAsync, status, data } = useSignUp()
 	const isPending = useMemo(
-		() => status !== 'error' && status !== 'idle',
-		[status]
+		() => status !== 'error' && status !== 'idle' && !data?.error,
+		[status, data]
 	)
 	const componentData: IAuthFormComponentData = {
 		submitCta: 'Sign Up',

@@ -12,7 +12,7 @@ import {
 } from '@/components/ui/dialog'
 import ButtonLoader from '@/components/utils/ButtonLoader'
 import { TransactionType } from '@prisma/client'
-import { MinusCircle, Plus, PlusCircle } from 'lucide-react'
+import { Edit, MinusCircle, Plus, PlusCircle } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
@@ -28,7 +28,8 @@ import { Input } from '@/components/ui/input'
 import { IInputField } from '@/types/form'
 import {
 	ITransactionCreateRequest,
-	transactionCreateSchema,
+	ITransactionUpdateRequest,
+	transactionUpdateSchema,
 } from '@/types/transaction/api'
 import DatePicker from '@/components/utils/DatePicker'
 import {
@@ -41,36 +42,65 @@ import {
 import useGetCategory from '@/hooks/category/useGetCategory'
 import SectionLoader from '@/components/utils/SectionLoader'
 import useCreateTransaction from '@/hooks/transaction/useCreateTransaction'
+import useUpdateTransaction from '@/hooks/transaction/useUpdateTransaction'
 import { useEffect } from 'react'
-import AddCategoryDialog from './AddCategoryDialog'
+import ActionCategoryDialog from './ActionCategoryDialog'
 
-interface IActionPopUpProps {
+interface IActionTransactionDialogProps {
 	type: TransactionType
+	defaultValues?: Partial<Omit<ITransactionCreateRequest, 'type'>> & {
+		id?: number
+	}
 }
 
-const ActionPopUp = ({ type }: IActionPopUpProps) => {
+const ActionTransactionDialog = ({
+	type,
+	defaultValues,
+}: IActionTransactionDialogProps) => {
 	const { data: category, isLoading: isCategoryLoading } = useGetCategory({
 		type,
 	})
-	const { mutateAsync, isPending: isTransactionPending } =
+	const { mutateAsync: createTransaction, isPending: isTransactionPending } =
 		useCreateTransaction()
+	const { mutateAsync: updateTransaction, isPending: isUpdatePending } =
+		useUpdateTransaction()
+
+	const isEditMode = !!defaultValues && typeof defaultValues.id === 'number'
+
+	const editModeButton = (
+		<Button variant="outline">
+			<Edit />
+		</Button>
+	)
 
 	const typeAction = {
 		INCOME: {
-			button: (
-				<ButtonLoader variant="success" icon={<PlusCircle />}>
+			button: isEditMode ? (
+				editModeButton
+			) : (
+				<ButtonLoader
+					variant="success"
+					icon={<PlusCircle />}
+					isLoading={isTransactionPending}
+				>
 					Add Income
 				</ButtonLoader>
 			),
-			title: 'Add Income',
+			title: isEditMode ? 'Update Income' : 'Add Income',
 		},
 		EXPENSE: {
-			button: (
-				<ButtonLoader variant="destructive" icon={<MinusCircle />}>
+			button: isEditMode ? (
+				editModeButton
+			) : (
+				<ButtonLoader
+					variant="destructive"
+					icon={<MinusCircle />}
+					isLoading={isTransactionPending}
+				>
 					Add Expense
 				</ButtonLoader>
 			),
-			title: 'Add Expense',
+			title: isEditMode ? 'Update Expense' : 'Add Expense',
 		},
 	}
 
@@ -95,18 +125,15 @@ const ActionPopUp = ({ type }: IActionPopUpProps) => {
 		},
 	]
 
-	const form = useForm<Omit<ITransactionCreateRequest, 'type'>>({
-		resolver: zodResolver(
-			transactionCreateSchema.omit({
-				type: true,
-			})
-		),
+	const form = useForm<ITransactionUpdateRequest>({
+		resolver: zodResolver(transactionUpdateSchema),
 		defaultValues: {
 			...inputField.reduce((acc, field) => {
 				return { ...acc, [field.name]: '' }
 			}, {}),
 			categoryId: category?.data?.[0].id,
 			date: new Date(),
+			...defaultValues,
 		},
 	})
 
@@ -117,12 +144,26 @@ const ActionPopUp = ({ type }: IActionPopUpProps) => {
 		}
 	}, [category, form])
 
-	const onSubmit = async (values: Omit<ITransactionCreateRequest, 'type'>) => {
-		await mutateAsync({
-			...values,
-			type,
-			categoryId: Number(values.categoryId),
-		})
+	const onSubmit = async (values: ITransactionUpdateRequest) => {
+		if (isEditMode && defaultValues?.id) {
+			await updateTransaction({
+				...values,
+				type,
+				id: defaultValues.id,
+				categoryId: Number(values.categoryId),
+			})
+		} else {
+			// Ensure required fields are present for create
+			const { title = '', amount = 0, categoryId, description, date } = values
+			await createTransaction({
+				title,
+				amount,
+				type,
+				categoryId: Number(categoryId),
+				description,
+				date,
+			})
+		}
 	}
 
 	return (
@@ -192,11 +233,11 @@ const ActionPopUp = ({ type }: IActionPopUpProps) => {
 											) : (
 												<SectionLoader />
 											)}
-											<AddCategoryDialog type={type}>
+											<ActionCategoryDialog type={type}>
 												<Button className="w-full" size="sm" variant="outline">
 													<Plus />
 												</Button>
-											</AddCategoryDialog>
+											</ActionCategoryDialog>
 										</SelectContent>
 									</Select>
 									<FormMessage />
@@ -220,20 +261,22 @@ const ActionPopUp = ({ type }: IActionPopUpProps) => {
 								</FormItem>
 							)}
 						/>
+						<DialogFooter>
+							<DialogClose asChild>
+								<Button variant="outline">Cancel</Button>
+							</DialogClose>
+							<ButtonLoader
+								type="submit"
+								isLoading={isEditMode ? isUpdatePending : isTransactionPending}
+							>
+								{isEditMode ? 'Update' : 'Add'}
+							</ButtonLoader>
+						</DialogFooter>
 					</form>
 				</Form>
-
-				<DialogFooter>
-					<DialogClose asChild>
-						<Button variant="outline">Cancel</Button>
-					</DialogClose>
-					<ButtonLoader type="submit" isLoading={isTransactionPending}>
-						Add
-					</ButtonLoader>
-				</DialogFooter>
 			</DialogContent>
 		</Dialog>
 	)
 }
 
-export default ActionPopUp
+export default ActionTransactionDialog

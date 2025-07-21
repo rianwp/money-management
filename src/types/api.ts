@@ -31,6 +31,16 @@ export const baseQuerySchema = z.object({
 })
 
 export const updateSchema = <T extends z.ZodRawShape>(schema: z.ZodObject<T>) =>
-	schema.partial().refine((data) => Object.keys(data).length > 0, {
-		message: 'At least one field must be provided for update',
-	})
+	schema
+		.partial()
+		.extend({ id: z.number() })
+		.refine((data) => Object.keys(data).length > 1 && data.id !== undefined, {
+			message:
+				'At least one field must be provided for update, and id is required',
+		})
+
+export const deleteSchema = z.object({
+	id: z.number(),
+})
+
+export type IDeleteUniversal = z.infer<typeof deleteSchema>

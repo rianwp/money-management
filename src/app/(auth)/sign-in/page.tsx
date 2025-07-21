@@ -8,10 +8,10 @@ import useSignIn from '@/hooks/auth/useSignIn'
 import { useMemo } from 'react'
 
 const Page = () => {
-	const { mutateAsync, status } = useSignIn()
+	const { mutateAsync, status, data } = useSignIn()
 	const isPending = useMemo(
-		() => status !== 'error' && status !== 'idle',
-		[status]
+		() => status !== 'error' && status !== 'idle' && !data?.error,
+		[status, data]
 	)
 	const componentData: IAuthFormComponentData = {
 		submitCta: 'Sign In',

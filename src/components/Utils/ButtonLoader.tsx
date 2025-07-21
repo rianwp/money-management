@@ -5,7 +5,7 @@ import { Button, IButtonProps } from '../ui/button'
 interface IButtonLoaderProps extends IButtonProps {
 	className?: string
 	isLoading?: boolean
-	children: React.ReactNode
+	children?: React.ReactNode
 	icon?: React.ReactNode
 }
 

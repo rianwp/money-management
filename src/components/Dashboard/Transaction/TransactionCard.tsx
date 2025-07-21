@@ -39,7 +39,7 @@ const TransactionCard = ({
 	const getColor = () => typeStyle[type].text
 
 	return (
-		<Card className="p-4 flex flex-row justify-between items-center gap-x-2">
+		<Card className="p-4 flex flex-row justify-between items-center gap-x-2 w-full">
 			<div className="flex flex-row gap-x-4">
 				<div
 					className={cn(
@@ -55,7 +55,7 @@ const TransactionCard = ({
 					<p className="text-gray-500 text-sm">{description}</p>
 				</div>
 			</div>
-			<div className="flex flex-col ">
+			<div className="flex flex-col items-end">
 				<h4 className={cn(getColor(), 'font-bold text-lg')}>
 					{typeStyle[type].prefix}
 					{formatRupiah(amount)}

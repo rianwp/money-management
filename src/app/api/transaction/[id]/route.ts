@@ -109,3 +109,85 @@ export const PUT = async (
 		return handleError(error)
 	}
 }
+
+export const DELETE = async (
+	req: NextRequest,
+	{ params }: IApiParams<{ id: string }>
+): Promise<NextResponse<IApiResponse>> => {
+	try {
+		const { id: userId } = (await getCurrentUser()) as UserAuth
+
+		const { id } = await params
+
+		await prisma.$transaction(async (tx) => {
+			const originalTransaction = await tx.transaction.findUnique({
+				where: {
+					id: Number(id),
+					userId: Number(userId),
+				},
+				select: {
+					amount: true,
+					type: true,
+				},
+			})
+
+			if (!originalTransaction) {
+				throw new Error('Transaction not found')
+			}
+
+			// Update the transaction
+			const updatedTransaction = await tx.transaction.delete({
+				where: {
+					id: Number(id),
+				},
+			})
+
+			// Calculate and apply summary changes
+			let incomeChange = 0
+			let outcomeChange = 0
+
+			if (originalTransaction.type === 'INCOME') {
+				incomeChange -= Number(originalTransaction.amount)
+			} else {
+				outcomeChange -= Number(originalTransaction.amount)
+			}
+
+			if (incomeChange !== 0 || outcomeChange !== 0) {
+				const updateIncome =
+					incomeChange !== 0
+						? {
+								totalIncome: { increment: incomeChange },
+						  }
+						: {}
+
+				const updateOutcome =
+					outcomeChange !== 0
+						? {
+								totalOutcome: { increment: outcomeChange },
+						  }
+						: {}
+
+				await tx.userSummary.update({
+					where: { userId: Number(userId) },
+					data: {
+						...updateIncome,
+						...updateOutcome,
+					},
+				})
+			}
+
+			return updatedTransaction
+		})
+
+		return NextResponse.json(
+			{
+				success: true,
+			},
+			{
+				status: 200,
+			}
+		)
+	} catch (error) {
+		return handleError(error)
+	}
+}

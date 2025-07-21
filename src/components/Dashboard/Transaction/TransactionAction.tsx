@@ -1,5 +1,5 @@
 import { Card, CardAction, CardContent } from '@/components/ui/card'
-import ActionPopUp from './ActionPopUp'
+import ActionCategoryDialog from './ActionTransactionDialog'
 
 const TransactionAction = () => {
 	return (
@@ -7,8 +7,8 @@ const TransactionAction = () => {
 			<CardContent className="flex flex-row justify-between items-center gap-x-2">
 				<h2 className="font-semibold text-2xl">Action</h2>
 				<CardAction className="flex flex-row gap-x-4">
-					<ActionPopUp type="INCOME" />
-					<ActionPopUp type="EXPENSE" />
+					<ActionCategoryDialog type="INCOME" />
+					<ActionCategoryDialog type="EXPENSE" />
 				</CardAction>
 			</CardContent>
 		</Card>
