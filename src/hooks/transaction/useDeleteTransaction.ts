@@ -18,7 +18,19 @@ const useDeleteTransaction = () => {
 
 		onSuccess: (data: IApiResponse<Transaction>) => {
 			if (data.success) {
-				queryClient.invalidateQueries({ queryKey: ['getTransaction'] })
+				queryClient.invalidateQueries({
+					queryKey: ['getTransaction'],
+					exact: false,
+				})
+				queryClient.invalidateQueries({
+					queryKey: ['getUserGrowth'],
+					exact: false,
+				})
+				queryClient.invalidateQueries({
+					queryKey: ['getUserBalances'],
+					exact: false,
+				})
+
 				toast('Success delete transaction', {
 					position: 'top-right',
 					closeButton: true,

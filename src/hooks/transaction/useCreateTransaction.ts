@@ -18,7 +18,18 @@ const useCreateTransaction = () => {
 		},
 
 		onSuccess: (data: IApiResponse<Transaction>) => {
-			queryClient.invalidateQueries({ queryKey: ['getTransaction'] })
+			queryClient.invalidateQueries({
+				queryKey: ['getTransaction'],
+				exact: false
+			})
+			queryClient.invalidateQueries({
+				queryKey: ['getUserGrowth'],
+				exact: false
+			})
+			queryClient.invalidateQueries({
+				queryKey: ['getUserBalances'],
+				exact: false
+			})
 			if (data.success) {
 				toast('Success add transaction', {
 					position: 'top-right',

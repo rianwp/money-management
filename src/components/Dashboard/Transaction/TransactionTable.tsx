@@ -7,11 +7,10 @@ import { Skeleton } from '@/components/ui/skeleton'
 import ButtonLoader from '@/components/utils/ButtonLoader'
 import { buttonVariants } from '@/components/ui/button'
 import Link from 'next/link'
-import { Prisma } from '@prisma/client'
-import useLazyLoad from '@/hooks/useLazyLoad'
 import DeleteConfirmationAlert from '../DeleteConfirmationAlert'
 import useDeleteTransaction from '@/hooks/transaction/useDeleteTransaction'
 import ActionTransactionDialog from './ActionTransactionDialog'
+import useIntersectionObserver from '@/hooks/useIntersectionObserver'
 
 interface ITransactionTableProps {
 	limit: number | 'lazy'
@@ -19,27 +18,28 @@ interface ITransactionTableProps {
 	showMore?: boolean
 }
 
-const PAGE_SIZE = 10
-
 const TransactionTable = ({
 	limit,
 	showExtension = false,
 	showMore = false,
 }: ITransactionTableProps) => {
-	const {
-		data: transactions,
-		isLoading,
-		observerRef,
-		staticMode,
-	} = useLazyLoad<
-		Prisma.TransactionGetPayload<{ include: { category: true } }>
-	>({
-		useQueryHook: useGetTransaction,
-		limit: limit === 'lazy' ? undefined : limit,
-		pageSize: PAGE_SIZE,
-	})
+	const { data, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage } =
+		useGetTransaction({
+			limit: limit === 'lazy' ? null : limit,
+		})
+
+	const loadMoreRef = useIntersectionObserver<HTMLDivElement>(
+		() => {
+			if (hasNextPage && !isFetchingNextPage) {
+				fetchNextPage()
+			}
+		},
+		{ threshold: 0.1 }
+	)
 
 	const { mutate: deleteTransaction } = useDeleteTransaction()
+
+	const transactions = data?.pages.flatMap((page) => page.data || []) || []
 
 	const handleDelete = (id: number) => {
 		deleteTransaction({ id })
@@ -54,7 +54,7 @@ const TransactionTable = ({
 						Your latest financial activity
 					</p>
 				</div>
-				{showExtension ? (
+				{showExtension && (
 					<div className="flex flex-row gap-x-4">
 						<ButtonLoader
 							variant="outline"
@@ -71,13 +71,13 @@ const TransactionTable = ({
 							Export
 						</ButtonLoader>
 					</div>
-				) : null}
+				)}
 			</CardContent>
 
 			<CardContent className="pt-0 flex flex-col gap-y-4">
-				{transactions.map((item, index) => (
+				{transactions.map((item) => (
 					<div
-						key={index}
+						key={item.id}
 						className="flex flex-row w-full gap-x-4 items-center"
 					>
 						<TransactionCard
@@ -90,40 +90,42 @@ const TransactionTable = ({
 							type={item.type}
 						/>
 
-						{showExtension ? (
-							<ActionTransactionDialog
-								defaultValues={{
-									amount: Number(item.amount),
-									id: item.id,
-									date: new Date(item.date),
-									categoryId: item.categoryId,
-									description: item.description || '',
-									title: item.title,
-								}}
-								type={item.type}
-							/>
-						) : null}
-						{showExtension ? (
-							<DeleteConfirmationAlert onDelete={() => handleDelete(item.id)} />
-						) : null}
+						{showExtension && (
+							<>
+								<ActionTransactionDialog
+									defaultValues={{
+										amount: Number(item.amount),
+										id: item.id,
+										date: new Date(item.date),
+										categoryId: item.categoryId,
+										description: item.description || '',
+										title: item.title,
+									}}
+									type={item.type}
+								/>
+								<DeleteConfirmationAlert
+									onDelete={() => handleDelete(item.id)}
+								/>
+							</>
+						)}
 					</div>
 				))}
-				{!staticMode ? <div ref={observerRef} className="-mt-4" /> : null}
-				{isLoading
-					? Array.from({ length: 5 }).map((_, i) => (
-							<Skeleton key={i} className="h-16 w-full rounded-md" />
-					  ))
-					: null}
-				{showMore ? (
+
+				{hasNextPage && <div ref={loadMoreRef} className="-mt-4" />}
+
+				{(isLoading || isFetchingNextPage) &&
+					Array.from({ length: 5 }).map((_, i) => (
+						<Skeleton key={i} className="h-16 w-full rounded-md" />
+					))}
+
+				{showMore && (
 					<Link
 						href="/income-and-expense"
-						className={buttonVariants({
-							variant: 'outline',
-						})}
+						className={buttonVariants({ variant: 'outline' })}
 					>
 						Show More
 					</Link>
-				) : null}
+				)}
 			</CardContent>
 		</Card>
 	)
