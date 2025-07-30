@@ -14,7 +14,6 @@ export const categoryCreateSchema = z.object({
 		.optional(),
 	monthlyTarget: z
 		.number()
-		.int()
 		.positive('Monthly target must be a positive integer')
 		.optional(),
 })

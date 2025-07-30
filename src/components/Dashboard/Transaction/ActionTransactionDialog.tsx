@@ -153,7 +153,6 @@ const ActionTransactionDialog = ({
 				categoryId: Number(values.categoryId),
 			})
 		} else {
-			// Ensure required fields are present for create
 			const { title = '', amount = 0, categoryId, description, date } = values
 			await createTransaction({
 				title,
@@ -198,6 +197,11 @@ const ActionTransactionDialog = ({
 													placeholder={item.placeholder}
 													type={item.type}
 													{...field}
+													onChange={(e) =>
+														field.onChange(
+															e.target.valueAsNumber || e.target.value
+														)
+													}
 												/>
 											</div>
 										</FormControl>
