@@ -103,7 +103,11 @@ const TransactionTable = ({
 								category={item.category.name}
 								icon={item.category.icon as IconName}
 								date={item.date}
-								description={item.description || ''}
+								description={
+									item.description
+										? `${item.category.name} | ${item.description}`
+										: item.category.name
+								}
 								title={item.title}
 								type={item.type}
 							/>

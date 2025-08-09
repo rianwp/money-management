@@ -7,6 +7,7 @@ import {
 	DollarSign,
 	// ChartNoAxesColumnIncreasing,
 	LogOut,
+	List,
 } from 'lucide-react'
 import {
 	Sidebar,
@@ -33,6 +34,11 @@ const items = [
 		title: 'Income & Expense',
 		url: '/income-and-expense',
 		icon: DollarSign,
+	},
+	{
+		title: 'Category',
+		url: '/category',
+		icon: List,
 	},
 	// {
 	// 	title: 'Scheduling',

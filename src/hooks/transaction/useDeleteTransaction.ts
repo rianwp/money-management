@@ -1,7 +1,7 @@
 'use client'
 
 import { axiosInstance } from '@/lib/fetch'
-import { IApiResponse, IDeleteUniversal } from '@/types/api'
+import { IApiResponse, IIDUniversal } from '@/types/api'
 import { Transaction } from '@prisma/client'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
@@ -10,7 +10,7 @@ const useDeleteTransaction = () => {
 	const queryClient = useQueryClient()
 
 	return useMutation({
-		mutationFn: async (payload: IDeleteUniversal) => {
+		mutationFn: async (payload: IIDUniversal) => {
 			const { data } = await axiosInstance.delete(`/transaction/${payload.id}`)
 
 			return data

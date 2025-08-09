@@ -21,7 +21,23 @@ export const GET = async (
 			search: searchParams.get('search'),
 			limit: searchParams.get('limit'),
 			page: searchParams.get('page'),
+			include: searchParams.get('include'),
 		})
+
+		// non scalable function
+		const includeTransactionsCount = query?.include?.includes(
+			'transactions_count'
+		)
+			? {
+					include: {
+						_count: {
+							select: {
+								transactions: true,
+							},
+						},
+					},
+			  }
+			: undefined
 
 		const page = Number(query.page) || 1
 		const limit = Number(query.limit) || 10
@@ -55,6 +71,7 @@ export const GET = async (
 			},
 			skip,
 			take: limit,
+			...includeTransactionsCount,
 		})
 
 		return NextResponse.json(

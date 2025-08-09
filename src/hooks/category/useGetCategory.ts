@@ -3,11 +3,25 @@
 import { axiosInstance } from '@/lib/fetch'
 import { IApiResponse } from '@/types/api'
 import { ICategoryQuery } from '@/types/category/api'
-import { Category } from '@prisma/client'
+import { Category, Prisma } from '@prisma/client'
 import { useQuery } from '@tanstack/react-query'
 
 const useGetCategory = (query: ICategoryQuery = {}) => {
-	return useQuery<IApiResponse<Category[]>, IApiResponse>({
+	return useQuery<
+		IApiResponse<
+			| Prisma.CategoryGetPayload<{
+					include: {
+						_count: {
+							select: {
+								transactions: true
+							}
+						}
+					}
+			  }>[]
+			| Category[]
+		>,
+		IApiResponse
+	>({
 		queryKey: ['getCategory', query],
 		queryFn: async () => {
 			const { data } = await axiosInstance.get('/category', {

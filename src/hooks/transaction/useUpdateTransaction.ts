@@ -1,7 +1,7 @@
 'use client'
 
 import { axiosInstance } from '@/lib/fetch'
-import { IApiResponse } from '@/types/api'
+import { IApiResponse, IIDUniversal } from '@/types/api'
 import { ITransactionUpdateRequest } from '@/types/transaction/api'
 import { Transaction } from '@prisma/client'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
@@ -11,7 +11,7 @@ const useUpdateTransaction = () => {
 	const queryClient = useQueryClient()
 
 	return useMutation({
-		mutationFn: async (payload: ITransactionUpdateRequest) => {
+		mutationFn: async (payload: ITransactionUpdateRequest & IIDUniversal) => {
 			const { data } = await axiosInstance.put(
 				`/transaction/${payload.id}`,
 				payload

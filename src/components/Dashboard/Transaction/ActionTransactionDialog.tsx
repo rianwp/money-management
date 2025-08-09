@@ -196,12 +196,7 @@ const ActionTransactionDialog = ({
 					<DialogDescription>Add some transaction</DialogDescription>
 				</DialogHeader>
 				<Form {...form}>
-					<form
-						onSubmit={form.handleSubmit(onSubmit, (error) =>
-							console.log(error)
-						)}
-						className="space-y-8"
-					>
+					<form className="space-y-8">
 						{inputField.map((item) => (
 							<FormField
 								key={item.name}
@@ -300,6 +295,7 @@ const ActionTransactionDialog = ({
 							</DialogClose>
 							<ButtonLoader
 								type="submit"
+								onClick={form.handleSubmit(onSubmit)}
 								isLoading={
 									isEditMode
 										? isTransactionUpdatePending

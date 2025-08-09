@@ -5,7 +5,7 @@ const TransactionTypeSchema = z.enum(['INCOME', 'EXPENSE'])
 
 export const transactionCreateSchema = z.object({
 	title: z.string().min(1, 'Title is required'),
-	categoryId: z.number().positive('Category ID must be a positive integer'),
+	categoryId: z.number().positive('Category is required'),
 	description: z.string().optional(),
 	type: TransactionTypeSchema,
 	date: z.coerce
@@ -14,7 +14,7 @@ export const transactionCreateSchema = z.object({
 			invalid_type_error: 'Date must be a valid date',
 		})
 		.optional(),
-	amount: z.number().positive('Amount must be a positive integer'),
+	amount: z.number().positive('Amount must be a positive number'),
 })
 
 export const transactionUpdateSchema = updateSchema(transactionCreateSchema)

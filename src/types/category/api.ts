@@ -10,7 +10,7 @@ export const categoryCreateSchema = z.object({
 	description: z.string().optional(),
 	monthlyTarget: z
 		.number()
-		.positive('Monthly target must be a positive integer')
+		.positive('Monthly target must be a positive number')
 		.optional(),
 })
 
@@ -18,6 +18,7 @@ export const categoryUpdateSchema = updateSchema(categoryCreateSchema)
 
 export const categoryQuerySchema = baseQuerySchema.extend({
 	type: TransactionTypeSchema.nullable().optional(),
+	include: z.enum(['transactions_count']).nullable().optional(),
 })
 
 export type ICategoryCreateRequest = z.infer<typeof categoryCreateSchema>

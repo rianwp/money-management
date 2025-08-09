@@ -6,29 +6,6 @@ import { ITransactionQuery } from '@/types/transaction/api'
 import { Prisma } from '@prisma/client'
 import { useInfiniteQuery } from '@tanstack/react-query'
 
-// const useGetTransaction = (query: ITransactionQuery = {}) => {
-// 	return useQuery<
-// 		IApiResponse<
-// 			Prisma.TransactionGetPayload<{
-// 				include: {
-// 					category: true
-// 				}
-// 			}>[]
-// 		>,
-// 		IApiResponse
-// 	>({
-// 		queryKey: ['getTransaction', query],
-// 		queryFn: async () => {
-// 			const { data } = await axiosInstance.get('/transaction', {
-// 				params: query,
-// 			})
-// 			return data
-// 		},
-// 	})
-// }
-
-// export default useGetTransaction
-
 const PAGE_SIZE = 10
 
 const useGetTransaction = (query: ITransactionQuery = {}) => {

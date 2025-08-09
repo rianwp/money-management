@@ -109,7 +109,7 @@ const iconNames: IconName[] = [
 ]
 
 const ActionCategoryDialog = ({
-	type,
+	type = 'INCOME',
 	children,
 }: IActionCategoryDialogProps) => {
 	const [open, setOpen] = useState(false)
@@ -153,7 +153,7 @@ const ActionCategoryDialog = ({
 					</DialogDescription>
 				</DialogHeader>
 				<Form {...form}>
-					<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+					<form className="space-y-4">
 						<FormField
 							control={form.control}
 							name="name"
@@ -254,7 +254,11 @@ const ActionCategoryDialog = ({
 									Cancel
 								</Button>
 							</DialogClose>
-							<ButtonLoader type="submit" isLoading={isPending}>
+							<ButtonLoader
+								onClick={form.handleSubmit(onSubmit)}
+								type="submit"
+								isLoading={isPending}
+							>
 								Add
 							</ButtonLoader>
 						</DialogFooter>
