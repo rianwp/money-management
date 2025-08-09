@@ -6,11 +6,7 @@ const TransactionTypeSchema = z.enum(['INCOME', 'EXPENSE'])
 export const transactionCreateSchema = z.object({
 	title: z.string().min(1, 'Title is required'),
 	categoryId: z.number().positive('Category ID must be a positive integer'),
-	description: z
-		.string()
-		.min(1, 'Description cannot be empty')
-		.max(75, 'Description must less than 75 character')
-		.optional(),
+	description: z.string().optional(),
 	type: TransactionTypeSchema,
 	date: z.coerce
 		.date({

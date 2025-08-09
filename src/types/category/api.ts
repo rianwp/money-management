@@ -7,11 +7,7 @@ export const categoryCreateSchema = z.object({
 	name: z.string().min(1, 'Name is required'),
 	icon: z.string().optional(),
 	type: TransactionTypeSchema,
-	description: z
-		.string()
-		.min(1, 'Description cannot be empty')
-		.max(75, 'Description must less than 75 character')
-		.optional(),
+	description: z.string().optional(),
 	monthlyTarget: z
 		.number()
 		.positive('Monthly target must be a positive integer')

@@ -28,8 +28,7 @@ import { Input } from '@/components/ui/input'
 import { IInputField } from '@/types/form'
 import {
 	ITransactionCreateRequest,
-	ITransactionUpdateRequest,
-	transactionUpdateSchema,
+	transactionCreateSchema,
 } from '@/types/transaction/api'
 import DatePicker from '@/components/utils/DatePicker'
 import {
@@ -43,7 +42,7 @@ import useGetCategory from '@/hooks/category/useGetCategory'
 import SectionLoader from '@/components/utils/SectionLoader'
 import useCreateTransaction from '@/hooks/transaction/useCreateTransaction'
 import useUpdateTransaction from '@/hooks/transaction/useUpdateTransaction'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import ActionCategoryDialog from './ActionCategoryDialog'
 
 interface IActionTransactionDialogProps {
@@ -57,13 +56,19 @@ const ActionTransactionDialog = ({
 	type,
 	defaultValues,
 }: IActionTransactionDialogProps) => {
+	const [open, setOpen] = useState(false)
 	const { data: category, isLoading: isCategoryLoading } = useGetCategory({
 		type,
 	})
-	const { mutateAsync: createTransaction, isPending: isTransactionPending } =
-		useCreateTransaction()
-	const { mutateAsync: updateTransaction, isPending: isUpdatePending } =
-		useUpdateTransaction()
+
+	const {
+		mutateAsync: createTransaction,
+		isPending: isTransactionCreatePending,
+	} = useCreateTransaction()
+	const {
+		mutateAsync: updateTransaction,
+		isPending: isTransactionUpdatePending,
+	} = useUpdateTransaction()
 
 	const isEditMode = !!defaultValues && typeof defaultValues.id === 'number'
 
@@ -81,7 +86,7 @@ const ActionTransactionDialog = ({
 				<ButtonLoader
 					variant="success"
 					icon={<PlusCircle />}
-					isLoading={isTransactionPending}
+					isLoading={isTransactionCreatePending}
 				>
 					Add Income
 				</ButtonLoader>
@@ -95,7 +100,7 @@ const ActionTransactionDialog = ({
 				<ButtonLoader
 					variant="destructive"
 					icon={<MinusCircle />}
-					isLoading={isTransactionPending}
+					isLoading={isTransactionCreatePending}
 				>
 					Add Expense
 				</ButtonLoader>
@@ -125,35 +130,49 @@ const ActionTransactionDialog = ({
 		},
 	]
 
-	const form = useForm<ITransactionUpdateRequest>({
-		resolver: zodResolver(transactionUpdateSchema),
+	const form = useForm<ITransactionCreateRequest>({
+		resolver: zodResolver(transactionCreateSchema),
 		defaultValues: {
 			...inputField.reduce((acc, field) => {
 				return { ...acc, [field.name]: '' }
 			}, {}),
-			categoryId: category?.data?.[0].id,
+			type: type,
+			categoryId: defaultValues?.categoryId || (category?.data?.[0]?.id ?? 0),
 			date: new Date(),
 			...defaultValues,
 		},
 	})
 
 	useEffect(() => {
-		if (category?.data?.length && !form.getValues('categoryId')) {
+		if (
+			category?.data?.length &&
+			!form.getValues('categoryId') &&
+			!defaultValues?.categoryId
+		) {
 			const firstCategoryId = String(category.data[0].id)
 			form.setValue('categoryId', Number(firstCategoryId))
 		}
-	}, [category, form])
+	}, [category, form, defaultValues?.categoryId])
 
-	const onSubmit = async (values: ITransactionUpdateRequest) => {
+	const onSubmit = async (values: ITransactionCreateRequest) => {
+		if (!values.categoryId || values.categoryId <= 0) {
+			form.setError('categoryId', {
+				type: 'manual',
+				message: 'Please select a category',
+			})
+			return
+		}
+
 		if (isEditMode && defaultValues?.id) {
 			await updateTransaction({
 				...values,
 				type,
-				id: defaultValues.id,
+				id: defaultValues?.id,
 				categoryId: Number(values.categoryId),
 			})
 		} else {
 			const { title = '', amount = 0, categoryId, description, date } = values
+
 			await createTransaction({
 				title,
 				amount,
@@ -163,10 +182,13 @@ const ActionTransactionDialog = ({
 				date,
 			})
 		}
+
+		setOpen(false)
+		form.reset()
 	}
 
 	return (
-		<Dialog>
+		<Dialog open={open} onOpenChange={setOpen}>
 			<DialogTrigger asChild>{typeAction[type].button}</DialogTrigger>
 			<DialogContent>
 				<DialogHeader>
@@ -174,7 +196,12 @@ const ActionTransactionDialog = ({
 					<DialogDescription>Add some transaction</DialogDescription>
 				</DialogHeader>
 				<Form {...form}>
-					<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+					<form
+						onSubmit={form.handleSubmit(onSubmit, (error) =>
+							console.log(error)
+						)}
+						className="space-y-8"
+					>
 						{inputField.map((item) => (
 							<FormField
 								key={item.name}
@@ -218,9 +245,11 @@ const ActionTransactionDialog = ({
 								<FormItem>
 									<FormLabel>Category</FormLabel>
 									<Select
-										onValueChange={field.onChange}
-										defaultValue={String(field.value)}
-										value={String(field.value)}
+										onValueChange={(value) => field.onChange(Number(value))}
+										value={field.value ? String(field.value) : undefined}
+										defaultValue={
+											field.value === 0 ? undefined : String(field.value)
+										}
 									>
 										<FormControl>
 											<SelectTrigger>
@@ -271,7 +300,11 @@ const ActionTransactionDialog = ({
 							</DialogClose>
 							<ButtonLoader
 								type="submit"
-								isLoading={isEditMode ? isUpdatePending : isTransactionPending}
+								isLoading={
+									isEditMode
+										? isTransactionUpdatePending
+										: isTransactionCreatePending
+								}
 							>
 								{isEditMode ? 'Update' : 'Add'}
 							</ButtonLoader>

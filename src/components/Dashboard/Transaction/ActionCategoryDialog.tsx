@@ -128,7 +128,6 @@ const ActionCategoryDialog = ({
 	const onSubmit = async (values: ICategoryCreateRequest) => {
 		await mutateAsync({
 			...values,
-			type,
 			monthlyTarget: values.monthlyTarget
 				? Number(values.monthlyTarget)
 				: undefined,
@@ -240,6 +239,9 @@ const ActionCategoryDialog = ({
 											placeholder="Monthly target (optional)"
 											type="number"
 											{...field}
+											onChange={(e) =>
+												field.onChange(e.target.valueAsNumber || e.target.value)
+											}
 										/>
 									</FormControl>
 									<FormMessage />
