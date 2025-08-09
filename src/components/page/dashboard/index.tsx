@@ -9,14 +9,17 @@ import {
 	ProgressCardTitle,
 	ProgressCardValue,
 } from '@/components/dashboard/UserSummary/ProgressCard'
+import useGetUserBalance from '@/hooks/user/useGetUserBalance'
 
 const DashboardPage = () => {
 	const { data: growth, isLoading: isGrowthLoading } = useGetUserGrowth()
+	const { data: balance, isLoading: isBalanceLoading } = useGetUserBalance()
+
 	return (
 		<div className="flex flex-col gap-y-8 w-full">
 			<div className="grid xl:grid-cols-5 grid-cols-4 lg:grid-rows-2 w-full gap-8">
 				<div className="xl:col-span-2 lg:col-span-2 col-span-4 xl:row-span-2 lg:row-span-1">
-					<BalanceCard />
+					<BalanceCard isLoading={isBalanceLoading} data={balance} />
 				</div>
 				<div className="xl:col-span-1 lg:col-span-2 col-span-4 xl:row-span-2 lg:row-span-1">
 					<ProgressCard

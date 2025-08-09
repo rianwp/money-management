@@ -31,7 +31,7 @@ const useUpdateTransaction = () => {
 					exact: false,
 				})
 				queryClient.invalidateQueries({
-					queryKey: ['getUserBalances'],
+					queryKey: ['getUserBalance'],
 					exact: false,
 				})
 

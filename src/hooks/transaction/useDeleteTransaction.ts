@@ -27,7 +27,7 @@ const useDeleteTransaction = () => {
 					exact: false,
 				})
 				queryClient.invalidateQueries({
-					queryKey: ['getUserBalances'],
+					queryKey: ['getUserBalance'],
 					exact: false,
 				})
 

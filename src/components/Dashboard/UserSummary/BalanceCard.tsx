@@ -1,7 +1,8 @@
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
-import useGetUserBalance from '@/hooks/user/useGetUserBalance'
 import { formatRupiah } from '@/lib/utils'
+import { IApiResponse } from '@/types/api'
+import { IUserBalance } from '@/types/user/api'
 import { Decimal } from '@prisma/client/runtime/library'
 import {
 	Eye,
@@ -11,9 +12,13 @@ import {
 } from 'lucide-react'
 import { useState } from 'react'
 
-const BalanceCard = () => {
+interface IBalanceCardProps {
+	isLoading: boolean
+	data?: IApiResponse<IUserBalance>
+}
+
+const BalanceCard = ({ data, isLoading }: IBalanceCardProps) => {
 	const [blur, setBlur] = useState(false)
-	const { data, isLoading } = useGetUserBalance()
 
 	const handleBlur = () => {
 		setBlur((blur) => !blur)
