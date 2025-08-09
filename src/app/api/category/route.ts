@@ -30,6 +30,7 @@ export const GET = async (
 		const category = await prisma.category.findMany({
 			where: {
 				userId: Number(userId),
+				isActive: true,
 				type: query.type || undefined,
 				...(query.search &&
 					query.search.trim() !== '' && {

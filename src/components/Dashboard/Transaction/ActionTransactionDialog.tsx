@@ -43,7 +43,7 @@ import SectionLoader from '@/components/utils/SectionLoader'
 import useCreateTransaction from '@/hooks/transaction/useCreateTransaction'
 import useUpdateTransaction from '@/hooks/transaction/useUpdateTransaction'
 import { useEffect, useState } from 'react'
-import ActionCategoryDialog from './ActionCategoryDialog'
+import ActionCategoryDialog from '../Category/ActionCategoryDialog'
 
 interface IActionTransactionDialogProps {
 	type: TransactionType
