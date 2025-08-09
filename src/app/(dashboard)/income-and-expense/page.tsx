@@ -1,15 +1,13 @@
-'use client'
+import IncomeExpensePage from '@/components/page/dashboard/income-and-expense'
+import { Metadata } from 'next'
 
-import TransactionAction from '@/components/dashboard/Transaction/TransactionAction'
-import TransactionTable from '@/components/dashboard/Transaction/TransactionTable'
+export const metadata: Metadata = {
+	title: 'Income and Expense',
+	description: '',
+}
 
 const Page = () => {
-	return (
-		<div className="flex flex-col gap-y-8 w-full">
-			<TransactionAction />
-			<TransactionTable limit="lazy" showExtension />
-		</div>
-	)
+	return <IncomeExpensePage />
 }
 
 export default Page

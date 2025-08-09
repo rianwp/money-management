@@ -1,3 +1,5 @@
+'use client'
+
 import { Card, CardContent } from '@/components/ui/card'
 import useGetTransaction from '@/hooks/transaction/useGetTransaction'
 import { Download, Filter } from 'lucide-react'
