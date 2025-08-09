@@ -4,9 +4,9 @@ import ActionCategoryDialog from './ActionTransactionDialog'
 const TransactionAction = () => {
 	return (
 		<Card>
-			<CardContent className="flex flex-row justify-between items-center gap-x-2">
+			<CardContent className="flex flex-row flex-wrap justify-between items-center gap-4 md:px-6 px-4">
 				<h2 className="font-semibold text-2xl">Action</h2>
-				<CardAction className="flex flex-row gap-x-4">
+				<CardAction className="flex flex-row flex-wrap gap-4">
 					<ActionCategoryDialog type="INCOME" />
 					<ActionCategoryDialog type="EXPENSE" />
 				</CardAction>

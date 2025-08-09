@@ -51,16 +51,20 @@ const TransactionCard = ({
 					<DynamicIcon name={icon} className="w-6 h-6" />
 				</div>
 				<div className="flex flex-col">
-					<h3 className="font-semibold">{title}</h3>
-					<p className="text-gray-500 text-sm">{description}</p>
+					<h3 className="font-semibold md:text-lg text-sm break-all">
+						{title}
+					</h3>
+					<p className="text-gray-500 md:text-sm text-xs">{description}</p>
 				</div>
 			</div>
-			<div className="flex flex-col items-end">
-				<h4 className={cn(getColor(), 'font-bold text-lg')}>
+			<div className="flex flex-col items-end text-right">
+				<h4
+					className={cn(getColor(), 'font-bold md:text-lg text-sm break-all')}
+				>
 					{typeStyle[type].prefix}
 					{formatRupiah(amount)}
 				</h4>
-				<p className="text-gray-500 text-sm">{formatDate(date)}</p>
+				<p className="text-gray-500 md:text-sm text-xs">{formatDate(date)}</p>
 			</div>
 		</Card>
 	)

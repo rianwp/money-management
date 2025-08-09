@@ -22,7 +22,7 @@ const DeleteConfirmationAlert = ({
 	return (
 		<AlertDialog>
 			<AlertDialogTrigger asChild>
-				<Button variant="destructive">
+				<Button variant="destructive" size="sm">
 					<Trash2 />
 				</Button>
 			</AlertDialogTrigger>

@@ -19,11 +19,11 @@ const ButtonLoader = ({
 	return (
 		<Button {...props} className={cn(className)} disabled={isLoading}>
 			{isLoading ? (
-				<Loader2 className={cn('h-5 w-5 animate-spin mr-2')} />
+				<Loader2 className={cn('h-5 w-5 animate-spin')} />
 			) : (
 				icon || null
 			)}
-			<span>{children}</span>
+			{children ? <span>{children}</span> : null}
 		</Button>
 	)
 }

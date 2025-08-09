@@ -15,6 +15,7 @@ import ActionTransactionDialog from './ActionTransactionDialog'
 import useIntersectionObserver from '@/hooks/useIntersectionObserver'
 import EmptyStateWrapper from '@/components/utils/EmptyStateWrapper'
 import { useMemo } from 'react'
+import SearchInput from '@/components/utils/SearchInput'
 
 interface ITransactionTableProps {
 	limit: number | 'lazy'
@@ -58,18 +59,14 @@ const TransactionTable = ({
 	}
 
 	return (
-		<Card className="flex flex-col">
-			<CardContent className="flex justify-between items-center gap-x-2">
-				<div className="flex flex-col">
-					<h2 className="font-semibold text-2xl">Recent Transactions</h2>
-					<p className="text-gray-500 text-sm">
-						Your latest financial activity
-					</p>
-				</div>
-				{showExtension && (
-					<div className="flex flex-row gap-x-4">
+		<div>
+			{showExtension && (
+				<div className="flex flex-row justify-between md:gap-x-4 gap-x-2 mb-4">
+					<SearchInput isLoading={isLoading} />
+					<div className="flex flex-row md:gap-x-4 gap-x-2">
 						<ButtonLoader
 							variant="outline"
+							size="lg"
 							isLoading={isLoading}
 							disabled={isEmpty}
 							icon={<Filter />}
@@ -78,6 +75,7 @@ const TransactionTable = ({
 						</ButtonLoader>
 						<ButtonLoader
 							variant="outline"
+							size="lg"
 							isLoading={isLoading}
 							disabled={isEmpty}
 							icon={<Download />}
@@ -85,71 +83,81 @@ const TransactionTable = ({
 							Export
 						</ButtonLoader>
 					</div>
-				)}
-			</CardContent>
+				</div>
+			)}
+			<Card className="flex flex-col">
+				<CardContent className="flex justify-between items-center gap-x-2 md:px-6 px-4">
+					<div className="flex flex-col">
+						<h2 className="font-semibold text-2xl">Recent Transactions</h2>
+						<p className="text-gray-500 text-sm">
+							Your latest financial activity
+						</p>
+					</div>
+				</CardContent>
 
-			<CardContent className="pt-0 flex flex-col gap-y-4">
-				<EmptyStateWrapper
-					isEmpty={isEmpty}
-					message="You have no transactions yet"
-				>
-					{transactions.map((item) => (
-						<div
-							key={item.id}
-							className="flex flex-row w-full gap-x-4 items-center"
-						>
-							<TransactionCard
-								amount={Number(item.amount)}
-								category={item.category.name}
-								icon={item.category.icon as IconName}
-								date={item.date}
-								description={
-									item.description
-										? `${item.category.name} | ${item.description}`
-										: item.category.name
-								}
-								title={item.title}
-								type={item.type}
-							/>
-
-							{showExtension && (
-								<>
-									<ActionTransactionDialog
-										defaultValues={{
-											amount: Number(item.amount),
-											id: item.id,
-											date: new Date(item.date),
-											categoryId: item.categoryId,
-											description: item.description || '',
-											title: item.title,
-										}}
-										type={item.type}
-									/>
-									<DeleteConfirmationAlert
-										onDelete={() => handleDelete(item.id)}
-									/>
-								</>
-							)}
-						</div>
-					))}
-					{hasNextPage && <div ref={loadMoreRef} className="-mt-4" />}
-
-					{(isLoading || isFetchingNextPage) &&
-						Array.from({ length: 5 }).map((_, i) => (
-							<Skeleton key={i} className="h-16 w-full rounded-md" />
-						))}
-				</EmptyStateWrapper>
-
-				{showMore && !isEmpty ? (
-					<Link
-						href="/income-and-expense"
-						className={buttonVariants({ variant: 'outline' })}
+				<CardContent className="pt-0 flex flex-col gap-y-4 md:px-6 px-4">
+					<EmptyStateWrapper
+						isEmpty={isEmpty}
+						message="You have no transactions yet"
 					>
-						Show More
-					</Link>
-				) : null}
-			</CardContent>
-		</Card>
+						{transactions.map((item) => (
+							<div
+								key={item.id}
+								className="flex flex-row w-full md:gap-x-4 gap-x-2 items-center"
+							>
+								<TransactionCard
+									amount={Number(item.amount)}
+									category={item.category.name}
+									icon={item.category.icon as IconName}
+									date={item.date}
+									description={
+										item.description
+											? `${item.category.name} | ${item.description}`
+											: item.category.name
+									}
+									title={item.title}
+									type={item.type}
+								/>
+
+								{showExtension ? (
+									<div className="flex md:flex-row flex-col gap-x-4 gap-y-2">
+										<ActionTransactionDialog
+											defaultValues={{
+												amount: Number(item.amount),
+												id: item.id,
+												date: new Date(item.date),
+												categoryId: item.categoryId,
+												description: item.description || '',
+												title: item.title,
+											}}
+											type={item.type}
+										/>
+										<DeleteConfirmationAlert
+											onDelete={() => handleDelete(item.id)}
+										/>
+									</div>
+								) : null}
+							</div>
+						))}
+						{hasNextPage && <div ref={loadMoreRef} className="-mt-4" />}
+
+						{(isLoading || isFetchingNextPage) &&
+							Array.from({ length: 5 }).map((_, i) => (
+								<Skeleton key={i} className="h-16 w-full rounded-md" />
+							))}
+					</EmptyStateWrapper>
+
+					{showMore && !isEmpty ? (
+						<Link
+							href="/income-and-expense"
+							className={buttonVariants({ variant: 'outline' })}
+						>
+							Show More
+						</Link>
+					) : null}
+				</CardContent>
+			</Card>
+		</div>
 	)
 }
 

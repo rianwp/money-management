@@ -73,7 +73,7 @@ const ActionTransactionDialog = ({
 	const isEditMode = !!defaultValues && typeof defaultValues.id === 'number'
 
 	const editModeButton = (
-		<Button variant="outline">
+		<Button variant="outline" size="sm">
 			<Edit />
 		</Button>
 	)

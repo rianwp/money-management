@@ -1,0 +1,100 @@
+import { Search } from 'lucide-react'
+import { Input } from '../ui/input'
+import ButtonLoader from './ButtonLoader'
+import { useState, useEffect } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
+import { useDebouncedCallback } from 'use-debounce'
+
+interface ISearchInputProps {
+	isLoading: boolean
+	paramName?: string
+	placeholder?: string
+	debounceMs?: number
+	autoSearch?: boolean
+}
+
+const SearchInput = ({
+	isLoading,
+	paramName = 'search',
+	placeholder = 'Search',
+	debounceMs = 500,
+	autoSearch = false,
+}: ISearchInputProps) => {
+	const router = useRouter()
+	const searchParams = useSearchParams()
+	const [searchValue, setSearchValue] = useState(
+		searchParams.get(paramName) || ''
+	)
+
+	const updateSearchParams = (value: string) => {
+		const params = new URLSearchParams(searchParams.toString())
+
+		if (value.trim()) {
+			params.set(paramName, value.trim())
+		} else {
+			params.delete(paramName)
+		}
+
+		params.delete('page')
+		router.push(`?${params.toString()}`)
+	}
+
+	const debouncedSearch = useDebouncedCallback((value: string) => {
+		if (autoSearch) {
+			updateSearchParams(value)
+		}
+	}, debounceMs)
+
+	const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		const value = e.target.value
+		setSearchValue(value)
+
+		if (value === '' && searchParams.get(paramName)) {
+			updateSearchParams('')
+		} else if (autoSearch) {
+			debouncedSearch(value)
+		}
+	}
+
+	const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+		if (e.key === 'Enter') {
+			e.preventDefault()
+			updateSearchParams(searchValue)
+		}
+	}
+
+	const handleSearchClick = () => {
+		updateSearchParams(searchValue)
+	}
+
+	useEffect(() => {
+		const urlSearchValue = searchParams.get(paramName) || ''
+		if (urlSearchValue !== searchValue) {
+			setSearchValue(urlSearchValue)
+		}
+	}, [searchParams, paramName])
+
+	return (
+		<div className="relative max-w-[400px]">
+			<Input
+				placeholder={placeholder}
+				type="text"
+				value={searchValue}
+				onChange={handleInputChange}
+				onKeyDown={handleKeyDown}
+				className="bg-card h-[40px] pr-12"
+			/>
+			<ButtonLoader
+				variant="ghost"
+				size="sm"
+				isLoading={isLoading}
+				disabled={isLoading}
+				icon={<Search />}
+				onClick={handleSearchClick}
+				className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8 !px-2"
+			/>
+		</div>
+	)
+}
+
+export default SearchInput
