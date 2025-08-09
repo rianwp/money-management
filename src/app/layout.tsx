@@ -3,6 +3,7 @@ import { Roboto } from 'next/font/google'
 import { cn } from '@/lib/utils'
 import Providers from '@/components/Providers'
 import CustomToaster from '@/components/utils/CustomToaster'
+import NextTopLoader from 'nextjs-toploader'
 import '@/assets/style/globals.css'
 
 interface IRootLayoutProps {
@@ -24,6 +25,7 @@ const RootLayout = ({ children }: IRootLayoutProps) => {
 	return (
 		<html lang="en">
 			<body className={cn(globalFont.className, 'antialiased')}>
+				<NextTopLoader color="linear-gradient(to right, rgb(134, 239, 172), rgb(59, 130, 246), rgb(147, 51, 234))" />
 				<Providers>{children}</Providers>
 				<CustomToaster />
 			</body>
