@@ -19,6 +19,18 @@ export const categoryUpdateSchema = updateSchema(categoryCreateSchema)
 export const categoryQuerySchema = baseQuerySchema.extend({
 	type: TransactionTypeSchema.nullable().optional(),
 	include: z.enum(['transactions_count']).nullable().optional(),
+	startDate: z.coerce
+		.date({
+			invalid_type_error: 'Start date must be a valid date',
+		})
+		.nullable()
+		.optional(),
+	endDate: z.coerce
+		.date({
+			invalid_type_error: 'Start date must be a valid date',
+		})
+		.nullable()
+		.optional(),
 })
 
 export type ICategoryCreateRequest = z.infer<typeof categoryCreateSchema>

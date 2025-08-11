@@ -180,8 +180,12 @@ const ActionCategoryDialog = ({
 											</SelectTrigger>
 										</FormControl>
 										<SelectContent>
-											<SelectItem value="INCOME">Income</SelectItem>
-											<SelectItem value="EXPENSE">Expense</SelectItem>
+											<SelectItem value={TransactionType.INCOME}>
+												Income
+											</SelectItem>
+											<SelectItem value={TransactionType.EXPENSE}>
+												Expense
+											</SelectItem>
 										</SelectContent>
 									</Select>
 									<FormMessage />
@@ -248,9 +252,9 @@ const ActionCategoryDialog = ({
 								</FormItem>
 							)}
 						/>
-						<DialogFooter>
+						<DialogFooter className="sm:grid gap-2 grid-cols-2">
 							<DialogClose asChild>
-								<Button variant="outline" type="button">
+								<Button variant="outline" type="button" className="w-full">
 									Cancel
 								</Button>
 							</DialogClose>
@@ -258,6 +262,7 @@ const ActionCategoryDialog = ({
 								onClick={form.handleSubmit(onSubmit)}
 								type="submit"
 								isLoading={isPending}
+								className="w-full"
 							>
 								Add
 							</ButtonLoader>

@@ -2,7 +2,7 @@
 
 import { Card, CardContent } from '@/components/ui/card'
 import useGetTransaction from '@/hooks/transaction/useGetTransaction'
-import { Download, Filter } from 'lucide-react'
+import { Download } from 'lucide-react'
 import TransactionCard from './TransactionCard'
 import { IconName } from '@/types/icon'
 import { Skeleton } from '@/components/ui/skeleton'
@@ -16,6 +16,9 @@ import useIntersectionObserver from '@/hooks/useIntersectionObserver'
 import EmptyStateWrapper from '@/components/utils/EmptyStateWrapper'
 import { useMemo } from 'react'
 import SearchInput from '@/components/utils/SearchInput'
+import FilterDialog from '../FilterDialog'
+import { IFilterField } from '@/types/form'
+import useGetCategory from '@/hooks/category/useGetCategory'
 
 interface ITransactionTableProps {
 	limit: number | 'lazy'
@@ -28,10 +31,17 @@ const TransactionTable = ({
 	showExtension = false,
 	showMore = false,
 }: ITransactionTableProps) => {
-	const { data, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage } =
-		useGetTransaction({
-			limit: limit === 'lazy' ? null : limit,
-		})
+	const {
+		data: transactions,
+		isLoading,
+		fetchNextPage,
+		hasNextPage,
+		isFetchingNextPage,
+	} = useGetTransaction({
+		limit: limit === 'lazy' ? null : limit,
+	})
+
+	const { data: categories } = useGetCategory()
 
 	const loadMoreRef = useIntersectionObserver<HTMLDivElement>(
 		() => {
@@ -44,13 +54,13 @@ const TransactionTable = ({
 
 	const { mutate: deleteTransaction } = useDeleteTransaction()
 
-	const transactions = useMemo(
-		() => data?.pages.flatMap((page) => page.data || []) || [],
-		[data?.pages]
+	const transactionsFlat = useMemo(
+		() => transactions?.pages.flatMap((page) => page.data || []) || [],
+		[transactions?.pages]
 	)
 
 	const isEmpty = useMemo(
-		() => transactions?.length === 0 && !isLoading,
+		() => transactionsFlat?.length === 0 && !isLoading,
 		[transactions, isLoading]
 	)
 
@@ -58,21 +68,46 @@ const TransactionTable = ({
 		deleteTransaction({ id })
 	}
 
+	const filterFields: IFilterField[] = [
+		{
+			name: 'dateRange',
+			label: 'Date Range',
+			fieldType: 'date-range',
+			placeholder: 'From date',
+			placeholderEnd: 'To date',
+		},
+		{
+			name: 'categoryId',
+			label: 'Category',
+			fieldType: 'select',
+			placeholder: 'Select category',
+			options:
+				categories?.data?.map((cat) => ({
+					label: cat.name,
+					value: String(cat.id),
+				})) || [],
+		},
+		{
+			name: 'type',
+			label: 'Type',
+			fieldType: 'type-select',
+			placeholder: 'Select type',
+		},
+		{
+			name: 'sort',
+			label: 'Sort Order',
+			fieldType: 'sort-select',
+			placeholder: 'Select sort order',
+		},
+	]
+
 	return (
 		<div>
 			{showExtension && (
 				<div className="flex flex-row justify-between md:gap-x-4 gap-x-2 mb-4">
 					<SearchInput isLoading={isLoading} />
 					<div className="flex flex-row md:gap-x-4 gap-x-2">
-						<ButtonLoader
-							variant="outline"
-							size="lg"
-							isLoading={isLoading}
-							disabled={isEmpty}
-							icon={<Filter />}
-						>
-							Filter
-						</ButtonLoader>
+						<FilterDialog fields={filterFields} />
 						<ButtonLoader
 							variant="outline"
 							size="lg"
@@ -100,7 +135,7 @@ const TransactionTable = ({
 						isEmpty={isEmpty}
 						message="You have no transactions yet"
 					>
-						{transactions.map((item) => (
+						{transactionsFlat.map((item) => (
 							<div
 								key={item.id}
 								className="flex flex-row w-full md:gap-x-4 gap-x-2 items-center"

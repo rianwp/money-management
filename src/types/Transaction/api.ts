@@ -21,6 +21,24 @@ export const transactionUpdateSchema = updateSchema(transactionCreateSchema)
 
 export const transactionQuerySchema = baseQuerySchema.extend({
 	type: TransactionTypeSchema.nullable().optional(),
+	startDate: z.coerce
+		.date({
+			invalid_type_error: 'Start date must be a valid date',
+		})
+		.nullable()
+		.optional(),
+	endDate: z.coerce
+		.date({
+			invalid_type_error: 'Start date must be a valid date',
+		})
+		.nullable()
+		.optional(),
+	category: z.coerce
+		.number()
+		.int()
+		.positive('Category id is not valid')
+		.nullable()
+		.optional(),
 })
 
 export type ITransactionCreateRequest = z.infer<typeof transactionCreateSchema>

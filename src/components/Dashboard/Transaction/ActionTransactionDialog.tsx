@@ -289,9 +289,11 @@ const ActionTransactionDialog = ({
 								</FormItem>
 							)}
 						/>
-						<DialogFooter>
+						<DialogFooter className="sm:grid gap-2 grid-cols-2">
 							<DialogClose asChild>
-								<Button variant="outline">Cancel</Button>
+								<Button variant="outline" className="w-full">
+									Cancel
+								</Button>
 							</DialogClose>
 							<ButtonLoader
 								type="submit"
@@ -301,6 +303,7 @@ const ActionTransactionDialog = ({
 										? isTransactionUpdatePending
 										: isTransactionCreatePending
 								}
+								className="w-full"
 							>
 								{isEditMode ? 'Update' : 'Add'}
 							</ButtonLoader>

@@ -7,6 +7,7 @@ import {
 	transactionQuerySchema,
 	transactionCreateSchema,
 } from '@/types/transaction/api'
+import { TransactionType } from '@prisma/client'
 import { User as UserAuth } from 'next-auth'
 import { NextRequest, NextResponse } from 'next/server'
 
@@ -35,7 +36,7 @@ export const POST = async (
 		})
 
 		const updateSummary =
-			type === 'INCOME'
+			type === TransactionType.INCOME
 				? {
 						totalIncome: {
 							increment: amount,
