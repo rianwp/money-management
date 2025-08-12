@@ -14,7 +14,7 @@ import useDeleteTransaction from '@/hooks/transaction/useDeleteTransaction'
 import ActionTransactionDialog from './ActionTransactionDialog'
 import useIntersectionObserver from '@/hooks/useIntersectionObserver'
 import EmptyStateWrapper from '@/components/utils/EmptyStateWrapper'
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import SearchInput from '@/components/utils/SearchInput'
 import FilterDialog from '../FilterDialog'
 import { IFilterField } from '@/types/form'
@@ -34,16 +34,6 @@ const TransactionTable = ({
 	showExtension = false,
 	showMore = false,
 }: ITransactionTableProps) => {
-	const {
-		data: transactions,
-		isLoading,
-		fetchNextPage,
-		hasNextPage,
-		isFetchingNextPage,
-	} = useGetTransaction({
-		limit: limit === 'lazy' ? null : limit,
-	})
-	const { data: categories } = useGetCategory()
 	const searchParams = useSearchParams()
 	const [filters, setFilters] = useState<Record<string, any>>({
 		dateRange: {
@@ -54,6 +44,23 @@ const TransactionTable = ({
 		type: searchParams?.get('type') || undefined,
 		sort: searchParams?.get('sort') || undefined,
 	})
+
+	const {
+		data: transactions,
+		isLoading,
+		fetchNextPage,
+		hasNextPage,
+		isFetchingNextPage,
+	} = useGetTransaction({
+		limit: limit === 'lazy' ? null : limit,
+		categoryId: Number(filters?.category),
+		startDate: parseDate(filters?.dateRange?.from),
+		endDate: parseDate(filters?.dateRange?.to),
+		search: searchParams?.get('search') || undefined,
+		sort: filters?.sort,
+		type: filters?.type,
+	})
+	const { data: categories } = useGetCategory()
 
 	const loadMoreRef = useIntersectionObserver<HTMLDivElement>(
 		() => {
@@ -79,14 +86,17 @@ const TransactionTable = ({
 
 	const handleFilterSubmit = (values: Record<string, any>) => {
 		setFilters(values)
-		updateMultipleSearchParams({
-			from: formatDate(values?.dateRange?.from) || undefined,
-			to: formatDate(values?.dateRange?.to) || undefined,
-			sort: values?.sort,
-			category: values?.category,
-			type: values?.type,
-		})
 	}
+
+	useEffect(() => {
+		updateMultipleSearchParams({
+			from: formatDate(filters?.dateRange?.from) || undefined,
+			to: formatDate(filters?.dateRange?.to) || undefined,
+			sort: filters?.sort,
+			category: filters?.category,
+			type: filters?.type,
+		})
+	}, [filters])
 
 	const handleDelete = (id: number) => {
 		deleteTransaction({ id })

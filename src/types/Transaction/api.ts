@@ -33,7 +33,7 @@ export const transactionQuerySchema = baseQuerySchema.extend({
 		})
 		.nullable()
 		.optional(),
-	category: z.coerce
+	categoryId: z.coerce
 		.number()
 		.int()
 		.positive('Category id is not valid')

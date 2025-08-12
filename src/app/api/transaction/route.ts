@@ -83,6 +83,9 @@ export const GET = async (
 			search: searchParams.get('search'),
 			page: searchParams.get('page'),
 			limit: searchParams.get('limit'),
+			startDate: searchParams.get('startDate'),
+			endDate: searchParams.get('endDate'),
+			categoryId: searchParams.get('categoryId'),
 		})
 
 		const page = Number(query.page) || 1
@@ -110,6 +113,13 @@ export const GET = async (
 							},
 						],
 					}),
+				categoryId: query.categoryId ? Number(query.categoryId) : undefined,
+				date: {
+					gte: query.startDate ? new Date(query.startDate) : undefined,
+					lte: query.endDate
+						? new Date(new Date(query.endDate).setHours(23, 59, 59, 999))
+						: undefined,
+				},
 			},
 			include: {
 				category: true,
