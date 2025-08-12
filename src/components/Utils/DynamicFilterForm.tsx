@@ -22,6 +22,7 @@ import {
 import DatePicker from '@/components/utils/DatePicker'
 import { IFilterField } from '@/types/form'
 import { TransactionType } from '@prisma/client'
+
 interface IDynamicFilterFormProps {
 	fields: IFilterField[]
 	onSubmit: (values: Record<string, any>) => void
@@ -41,21 +42,21 @@ const DynamicFilterForm = ({
 			case 'date-range':
 				schemaFields[field.name] = z
 					.object({
-						from: z.date().optional(),
-						to: z.date().optional(),
+						from: z.coerce.date().nullable().optional(),
+						to: z.coerce.date().nullable().optional(),
 					})
 					.optional()
 				break
 			case 'number':
-				schemaFields[field.name] = z.number().optional()
+				schemaFields[field.name] = z.number().nullable().optional()
 				break
 			case 'select':
 			case 'type-select':
 			case 'sort-select':
-				schemaFields[field.name] = z.string().optional()
+				schemaFields[field.name] = z.string().nullable().optional()
 				break
 			default:
-				schemaFields[field.name] = z.string().optional()
+				schemaFields[field.name] = z.string().nullable().optional()
 		}
 	})
 
@@ -76,7 +77,9 @@ const DynamicFilterForm = ({
 		<Form {...form}>
 			<form
 				id="dynamic-filter-form"
-				onSubmit={form.handleSubmit(handleSubmit)}
+				onSubmit={form.handleSubmit(handleSubmit, (errors) =>
+					console.log(errors)
+				)}
 				className="space-y-4"
 			>
 				{fields.map((field) => (
@@ -102,17 +105,14 @@ const renderField = (field: IFilterField, formField: any) => {
 	switch (field.fieldType) {
 		case 'date':
 			return (
-				<DatePicker
-					date={formField.value || new Date()}
-					onDateChange={formField.onChange}
-				/>
+				<DatePicker date={formField.value} onDateChange={formField.onChange} />
 			)
 		case 'date-range':
 			return (
 				<div className="flex flex-col gap-2">
 					<div className="flex gap-2">
 						<DatePicker
-							date={formField.value?.from || new Date()}
+							date={formField.value?.from}
 							onDateChange={(date) => {
 								const currentValue = formField.value || {}
 								formField.onChange({
@@ -122,7 +122,7 @@ const renderField = (field: IFilterField, formField: any) => {
 							}}
 						/>
 						<DatePicker
-							date={formField.value?.to || new Date()}
+							date={formField.value?.to}
 							onDateChange={(date) => {
 								const currentValue = formField.value || {}
 								formField.onChange({

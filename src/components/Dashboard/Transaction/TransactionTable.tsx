@@ -14,11 +14,14 @@ import useDeleteTransaction from '@/hooks/transaction/useDeleteTransaction'
 import ActionTransactionDialog from './ActionTransactionDialog'
 import useIntersectionObserver from '@/hooks/useIntersectionObserver'
 import EmptyStateWrapper from '@/components/utils/EmptyStateWrapper'
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import SearchInput from '@/components/utils/SearchInput'
 import FilterDialog from '../FilterDialog'
 import { IFilterField } from '@/types/form'
 import useGetCategory from '@/hooks/category/useGetCategory'
+import useUtilsSearchParams from '@/hooks/useUpdateSearchParams'
+import { formatDate, parseDate } from '@/lib/utils'
+import { useSearchParams } from 'next/navigation'
 
 interface ITransactionTableProps {
 	limit: number | 'lazy'
@@ -40,8 +43,17 @@ const TransactionTable = ({
 	} = useGetTransaction({
 		limit: limit === 'lazy' ? null : limit,
 	})
-
 	const { data: categories } = useGetCategory()
+	const searchParams = useSearchParams()
+	const [filters, setFilters] = useState<Record<string, any>>({
+		dateRange: {
+			to: parseDate(searchParams?.get('to') || '') || undefined,
+			from: parseDate(searchParams?.get('from') || '') || undefined,
+		},
+		category: searchParams?.get('category') || undefined,
+		type: searchParams?.get('type') || undefined,
+		sort: searchParams?.get('sort') || undefined,
+	})
 
 	const loadMoreRef = useIntersectionObserver<HTMLDivElement>(
 		() => {
@@ -53,6 +65,7 @@ const TransactionTable = ({
 	)
 
 	const { mutate: deleteTransaction } = useDeleteTransaction()
+	const { updateMultipleSearchParams } = useUtilsSearchParams()
 
 	const transactionsFlat = useMemo(
 		() => transactions?.pages.flatMap((page) => page.data || []) || [],
@@ -63,6 +76,17 @@ const TransactionTable = ({
 		() => transactionsFlat?.length === 0 && !isLoading,
 		[transactions, isLoading]
 	)
+
+	const handleFilterSubmit = (values: Record<string, any>) => {
+		setFilters(values)
+		updateMultipleSearchParams({
+			from: formatDate(values?.dateRange?.from) || undefined,
+			to: formatDate(values?.dateRange?.to) || undefined,
+			sort: values?.sort,
+			category: values?.category,
+			type: values?.type,
+		})
+	}
 
 	const handleDelete = (id: number) => {
 		deleteTransaction({ id })
@@ -77,7 +101,7 @@ const TransactionTable = ({
 			placeholderEnd: 'To date',
 		},
 		{
-			name: 'categoryId',
+			name: 'category',
 			label: 'Category',
 			fieldType: 'select',
 			placeholder: 'Select category',
@@ -107,7 +131,11 @@ const TransactionTable = ({
 				<div className="flex flex-row justify-between md:gap-x-4 gap-x-2 mb-4">
 					<SearchInput isLoading={isLoading} />
 					<div className="flex flex-row md:gap-x-4 gap-x-2">
-						<FilterDialog fields={filterFields} />
+						<FilterDialog
+							fields={filterFields}
+							handleSubmit={handleFilterSubmit}
+							defaultValues={filters}
+						/>
 						<ButtonLoader
 							variant="outline"
 							size="lg"

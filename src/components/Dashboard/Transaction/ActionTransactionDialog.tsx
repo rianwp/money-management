@@ -52,6 +52,27 @@ interface IActionTransactionDialogProps {
 	}
 }
 
+const inputField: IInputField[] = [
+	{
+		name: 'title',
+		label: 'Title',
+		placeholder: 'Enter transaction title',
+		type: 'text',
+	},
+	{
+		name: 'amount',
+		label: 'Amount',
+		placeholder: 'Enter amount',
+		type: 'number',
+	},
+	{
+		name: 'description',
+		label: 'Description',
+		placeholder: 'Enter description (optional)',
+		type: 'text',
+	},
+]
+
 const ActionTransactionDialog = ({
 	type,
 	defaultValues,
@@ -108,27 +129,6 @@ const ActionTransactionDialog = ({
 			title: isEditMode ? 'Update Expense' : 'Add Expense',
 		},
 	}
-
-	const inputField: IInputField[] = [
-		{
-			name: 'title',
-			label: 'Title',
-			placeholder: 'Enter transaction title',
-			type: 'text',
-		},
-		{
-			name: 'amount',
-			label: 'Amount',
-			placeholder: 'Enter amount',
-			type: 'number',
-		},
-		{
-			name: 'description',
-			label: 'Description',
-			placeholder: 'Enter description (optional)',
-			type: 'text',
-		},
-	]
 
 	const form = useForm<ITransactionCreateRequest>({
 		resolver: zodResolver(transactionCreateSchema),
@@ -281,7 +281,7 @@ const ActionTransactionDialog = ({
 									<FormLabel>Date</FormLabel>
 									<FormControl>
 										<DatePicker
-											date={field.value || new Date()}
+											date={field.value}
 											onDateChange={field.onChange}
 										/>
 									</FormControl>

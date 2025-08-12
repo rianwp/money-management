@@ -12,21 +12,22 @@ import ButtonLoader from '../utils/ButtonLoader'
 import { Button } from '../ui/button'
 import DynamicFilterForm from '../utils/DynamicFilterForm'
 import { IFilterField } from '@/types/form'
-import { useState } from 'react'
 
 interface IFilterDialogProps {
 	disabled?: boolean
 	isLoading?: boolean
 	fields: IFilterField[]
+	handleSubmit: (values: Record<string, any>) => void
+	defaultValues: Record<string, any>
 }
 
-const FilterDialog = ({ disabled, isLoading, fields }: IFilterDialogProps) => {
-	const [filters, setFilters] = useState<Record<string, any>>({})
-	const handleFilterSubmit = (values: Record<string, any>) => {
-		setFilters(values)
-		console.log(filters)
-	}
-
+const FilterDialog = ({
+	handleSubmit,
+	defaultValues,
+	disabled,
+	isLoading,
+	fields,
+}: IFilterDialogProps) => {
 	return (
 		<Dialog>
 			<DialogTrigger asChild>
@@ -47,8 +48,8 @@ const FilterDialog = ({ disabled, isLoading, fields }: IFilterDialogProps) => {
 
 				<DynamicFilterForm
 					fields={fields}
-					onSubmit={handleFilterSubmit}
-					defaultValues={filters}
+					onSubmit={handleSubmit}
+					defaultValues={defaultValues}
 				/>
 
 				<DialogFooter className="sm:grid gap-2 grid-cols-2">

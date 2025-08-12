@@ -2,8 +2,9 @@ import { Search } from 'lucide-react'
 import { Input } from '../ui/input'
 import ButtonLoader from './ButtonLoader'
 import { useState, useEffect } from 'react'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useSearchParams } from 'next/navigation'
 import { useDebouncedCallback } from 'use-debounce'
+import useUtilsSearchParams from '@/hooks/useUpdateSearchParams'
 
 interface ISearchInputProps {
 	isLoading: boolean
@@ -20,28 +21,16 @@ const SearchInput = ({
 	debounceMs = 500,
 	autoSearch = false,
 }: ISearchInputProps) => {
-	const router = useRouter()
 	const searchParams = useSearchParams()
 	const [searchValue, setSearchValue] = useState(
 		searchParams.get(paramName) || ''
 	)
 
-	const updateSearchParams = (value: string) => {
-		const params = new URLSearchParams(searchParams.toString())
-
-		if (value.trim()) {
-			params.set(paramName, value.trim())
-		} else {
-			params.delete(paramName)
-		}
-
-		params.delete('page')
-		router.push(`?${params.toString()}`)
-	}
+	const { updateSearchParams } = useUtilsSearchParams()
 
 	const debouncedSearch = useDebouncedCallback((value: string) => {
 		if (autoSearch) {
-			updateSearchParams(value)
+			updateSearchParams(paramName, value)
 		}
 	}, debounceMs)
 
@@ -50,7 +39,7 @@ const SearchInput = ({
 		setSearchValue(value)
 
 		if (value === '' && searchParams.get(paramName)) {
-			updateSearchParams('')
+			updateSearchParams(paramName, '')
 		} else if (autoSearch) {
 			debouncedSearch(value)
 		}
@@ -59,12 +48,12 @@ const SearchInput = ({
 	const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
 		if (e.key === 'Enter') {
 			e.preventDefault()
-			updateSearchParams(searchValue)
+			updateSearchParams(paramName, searchValue)
 		}
 	}
 
 	const handleSearchClick = () => {
-		updateSearchParams(searchValue)
+		updateSearchParams(paramName, searchValue)
 	}
 
 	useEffect(() => {

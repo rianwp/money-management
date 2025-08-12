@@ -8,6 +8,7 @@ import {
 	PopoverContent,
 	PopoverTrigger,
 } from '@/components/ui/popover'
+import { formatDate } from '@/lib/utils'
 
 interface IDatePickerProps {
 	onDateChange: (date?: Date) => void
@@ -26,7 +27,7 @@ const DatePicker = ({ onDateChange, date }: IDatePickerProps) => {
 						id="date"
 						className="w-48 justify-between font-normal"
 					>
-						{date ? date.toLocaleDateString() : 'Select date'}
+						{date ? formatDate(date) : 'Select date'}
 						<ChevronDownIcon />
 					</Button>
 				</PopoverTrigger>
