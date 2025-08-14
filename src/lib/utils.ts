@@ -56,22 +56,17 @@ export const parseDate = (
 	}
 
 	if (typeof dateInput !== 'string') {
-		console.error(
-			'Invalid input type. Expected string or Date, but got:',
-			dateInput
-		)
 		return null
 	}
 
 	try {
 		const parsed = parse(dateInput, 'dd-MM-yyyy', new Date())
 		if (!isValid(parsed)) {
-			console.error('Parsing failed for string:', dateInput)
 			return null
 		}
 		return parsed
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	} catch (error) {
-		console.error('An unexpected error occurred during parsing:', error)
 		return null
 	}
 }
