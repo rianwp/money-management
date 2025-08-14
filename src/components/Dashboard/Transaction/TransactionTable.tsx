@@ -53,7 +53,7 @@ const TransactionTable = ({
 		isFetchingNextPage,
 	} = useGetTransaction({
 		limit: limit === 'lazy' ? null : limit,
-		categoryId: Number(filters?.category),
+		categoryId: filters?.category,
 		startDate: parseDate(filters?.dateRange?.from),
 		endDate: parseDate(filters?.dateRange?.to),
 		search: searchParams?.get('search') || undefined,

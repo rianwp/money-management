@@ -5,28 +5,28 @@ import { TransactionType } from '@prisma/client'
 async function main() {
 	console.log('🌱 Starting database seeding...')
 
-	// Create users
+	// Create users with Indonesian data
 	const hashedPassword = await hashPassword('password123')
 
 	await prisma.user.createMany({
 		data: [
 			{
-				email: 'john.doe@example.com',
+				email: 'budi.santoso@example.com',
 				password: hashedPassword,
-				name: 'John Doe',
-				phone: '+1234567890',
+				name: 'Budi Santoso',
+				phone: '+628123456789',
 			},
 			{
-				email: 'jane.smith@example.com',
+				email: 'sari.dewi@example.com',
 				password: hashedPassword,
-				name: 'Jane Smith',
-				phone: '+1987654321',
+				name: 'Sari Dewi',
+				phone: '+628987654321',
 			},
 			{
-				email: 'mike.johnson@example.com',
+				email: 'ahmad.wijaya@example.com',
 				password: hashedPassword,
-				name: 'Mike Johnson',
-				phone: '+1122334455',
+				name: 'Ahmad Wijaya',
+				phone: '+628112233445',
 			},
 		],
 	})
@@ -36,100 +36,100 @@ async function main() {
 	// Get created users
 	const createdUsers = await prisma.user.findMany()
 
-	// Create categories for each user
+	// Create categories for each user (in Indonesian)
 	const categoryData = [
 		// Income categories
 		{
-			name: 'Salary',
+			name: 'Gaji',
 			icon: 'briefcase',
 			type: 'INCOME',
-			description: 'Monthly salary',
+			description: 'Gaji bulanan',
 		},
 		{
-			name: 'Freelancing',
+			name: 'Freelance',
 			icon: 'laptop',
 			type: 'INCOME',
-			description: 'Freelance work income',
+			description: 'Pendapatan freelance',
 		},
 		{
-			name: 'Investment',
+			name: 'Investasi',
 			icon: 'trending-up',
 			type: 'INCOME',
-			description: 'Investment returns',
+			description: 'Hasil investasi',
 		},
 		{
-			name: 'Business',
+			name: 'Bisnis',
 			icon: 'building-2',
 			type: 'INCOME',
-			description: 'Business income',
+			description: 'Pendapatan bisnis',
 		},
 		{
-			name: 'Other Income',
+			name: 'Pendapatan Lain',
 			icon: 'dollar-sign',
 			type: 'INCOME',
-			description: 'Other sources of income',
+			description: 'Sumber pendapatan lainnya',
 		},
 
 		// Expense categories
 		{
-			name: 'Food & Dining',
+			name: 'Makanan & Restoran',
 			icon: 'utensils-crossed',
 			type: 'EXPENSE',
-			description: 'Restaurant and food expenses',
+			description: 'Makan di restoran dan pengeluaran makanan',
 		},
 		{
-			name: 'Groceries',
+			name: 'Belanja Harian',
 			icon: 'shopping-cart',
 			type: 'EXPENSE',
-			description: 'Grocery shopping',
+			description: 'Belanja kebutuhan sehari-hari',
 		},
 		{
-			name: 'Transportation',
+			name: 'Transportasi',
 			icon: 'car',
 			type: 'EXPENSE',
-			description: 'Car, fuel, public transport',
+			description: 'Mobil, bensin, transportasi umum',
 		},
 		{
-			name: 'Utilities',
+			name: 'Listrik & Utilitas',
 			icon: 'zap',
 			type: 'EXPENSE',
-			description: 'Electricity, water, gas bills',
+			description: 'Tagihan listrik, air, gas',
 		},
 		{
-			name: 'Housing',
+			name: 'Tempat Tinggal',
 			icon: 'home',
 			type: 'EXPENSE',
-			description: 'Rent, mortgage, maintenance',
+			description: 'Sewa, KPR, maintenance rumah',
 		},
 		{
-			name: 'Healthcare',
+			name: 'Kesehatan',
 			icon: 'heart',
 			type: 'EXPENSE',
-			description: 'Medical expenses',
+			description: 'Biaya medis dan kesehatan',
 		},
 		{
-			name: 'Entertainment',
+			name: 'Hiburan',
 			icon: 'play',
 			type: 'EXPENSE',
-			description: 'Movies, games, subscriptions',
+			description: 'Bioskop, game, subscription',
 		},
 		{
-			name: 'Shopping',
+			name: 'Belanja',
 			icon: 'shopping-bag',
 			type: 'EXPENSE',
-			description: 'Clothing and personal items',
+			description: 'Pakaian dan barang pribadi',
 		},
 		{
-			name: 'Education',
+			name: 'Pendidikan',
 			icon: 'book-open',
 			type: 'EXPENSE',
-			description: 'Books, courses, training',
+			description: 'Buku, kursus, pelatihan',
 		},
 		{
-			name: 'Insurance',
+			name: 'Asuransi',
 			icon: 'shield',
 			type: 'EXPENSE',
-			description: 'Insurance premiums',
+			description: 'Premi asuransi',
 		},
 	]
 
@@ -150,7 +150,7 @@ async function main() {
 	// Get all categories
 	const categories = await prisma.category.findMany()
 
-	// Create transactions for the past 6 months
+	// Create transactions for the past 6 months (in Rupiah)
 	const currentDate = new Date()
 	const transactions = []
 
@@ -183,34 +183,34 @@ async function main() {
 				let amount, title, description
 
 				switch (category.name) {
-					case 'Salary':
-						amount = (Math.random() * 2000 + 3000).toFixed(2) // $3000-5000
-						title = 'Monthly Salary'
-						description = 'Regular monthly salary payment'
+					case 'Gaji':
+						amount = Math.floor((Math.random() * 30000000 + 45000000)) // Rp 45jt - 75jt
+						title = 'Gaji Bulanan'
+						description = 'Pembayaran gaji bulanan'
 						break
-					case 'Freelancing':
-						amount = (Math.random() * 800 + 200).toFixed(2) // $200-1000
-						title = 'Freelance Project'
-						description = 'Web development project payment'
+					case 'Freelance':
+						amount = Math.floor((Math.random() * 12000000 + 3000000)) // Rp 3jt - 15jt
+						title = 'Proyek Freelance'
+						description = 'Pembayaran proyek web development'
 						break
-					case 'Investment':
-						amount = (Math.random() * 300 + 50).toFixed(2) // $50-350
-						title = 'Dividend Payment'
-						description = 'Stock dividend or investment return'
+					case 'Investasi':
+						amount = Math.floor((Math.random() * 4500000 + 750000)) // Rp 750rb - 5.25jt
+						title = 'Dividen Saham'
+						description = 'Dividen saham atau hasil investasi'
 						break
-					case 'Business':
-						amount = (Math.random() * 1500 + 500).toFixed(2) // $500-2000
-						title = 'Business Revenue'
-						description = 'Monthly business income'
+					case 'Bisnis':
+						amount = Math.floor((Math.random() * 22500000 + 7500000)) // Rp 7.5jt - 30jt
+						title = 'Pendapatan Bisnis'
+						description = 'Pendapatan bisnis bulanan'
 						break
 					default:
-						amount = (Math.random() * 500 + 100).toFixed(2) // $100-600
-						title = 'Other Income'
-						description = 'Miscellaneous income'
+						amount = Math.floor((Math.random() * 7500000 + 1500000)) // Rp 1.5jt - 9jt
+						title = 'Pendapatan Lain'
+						description = 'Pendapatan lain-lain'
 				}
 
 				transactions.push({
-					amount: parseFloat(amount),
+					amount: amount,
 					title,
 					description,
 					type: 'INCOME' as TransactionType,
@@ -237,64 +237,64 @@ async function main() {
 				let amount, title, description
 
 				switch (category.name) {
-					case 'Food & Dining':
-						amount = (Math.random() * 80 + 20).toFixed(2) // $20-100
-						title = 'Restaurant Meal'
-						description = 'Dinner at local restaurant'
+					case 'Makanan & Restoran':
+						amount = Math.floor((Math.random() * 1200000 + 300000)) // Rp 300rb - 1.5jt
+						title = 'Makan di Restoran'
+						description = 'Makan malam di restoran lokal'
 						break
-					case 'Groceries':
-						amount = (Math.random() * 120 + 30).toFixed(2) // $30-150
-						title = 'Grocery Shopping'
-						description = 'Weekly grocery shopping'
+					case 'Belanja Harian':
+						amount = Math.floor((Math.random() * 1800000 + 450000)) // Rp 450rb - 2.25jt
+						title = 'Belanja Bulanan'
+						description = 'Belanja kebutuhan bulanan'
 						break
-					case 'Transportation':
-						amount = (Math.random() * 60 + 10).toFixed(2) // $10-70
-						title = 'Fuel/Transport'
-						description = 'Gas station or public transport'
+					case 'Transportasi':
+						amount = Math.floor((Math.random() * 900000 + 150000)) // Rp 150rb - 1.05jt
+						title = 'Bensin/Transportasi'
+						description = 'SPBU atau transportasi umum'
 						break
-					case 'Utilities':
-						amount = (Math.random() * 150 + 50).toFixed(2) // $50-200
-						title = 'Utility Bill'
-						description = 'Monthly utility payment'
+					case 'Listrik & Utilitas':
+						amount = Math.floor((Math.random() * 2250000 + 750000)) // Rp 750rb - 3jt
+						title = 'Tagihan Listrik'
+						description = 'Pembayaran tagihan bulanan'
 						break
-					case 'Housing':
-						amount = (Math.random() * 500 + 800).toFixed(2) // $800-1300
-						title = 'Rent Payment'
-						description = 'Monthly rent or mortgage'
+					case 'Tempat Tinggal':
+						amount = Math.floor((Math.random() * 7500000 + 12000000)) // Rp 12jt - 19.5jt
+						title = 'Sewa Rumah'
+						description = 'Sewa bulanan atau cicilan KPR'
 						break
-					case 'Healthcare':
-						amount = (Math.random() * 200 + 50).toFixed(2) // $50-250
-						title = 'Medical Expense'
-						description = 'Doctor visit or medication'
+					case 'Kesehatan':
+						amount = Math.floor((Math.random() * 3000000 + 750000)) // Rp 750rb - 3.75jt
+						title = 'Biaya Kesehatan'
+						description = 'Kunjungan dokter atau obat-obatan'
 						break
-					case 'Entertainment':
-						amount = (Math.random() * 50 + 10).toFixed(2) // $10-60
-						title = 'Entertainment'
-						description = 'Movie tickets or streaming subscription'
+					case 'Hiburan':
+						amount = Math.floor((Math.random() * 750000 + 150000)) // Rp 150rb - 900rb
+						title = 'Hiburan'
+						description = 'Tiket bioskop atau subscription streaming'
 						break
-					case 'Shopping':
-						amount = (Math.random() * 100 + 25).toFixed(2) // $25-125
-						title = 'Shopping'
-						description = 'Clothing or personal items'
+					case 'Belanja':
+						amount = Math.floor((Math.random() * 1500000 + 375000)) // Rp 375rb - 1.875jt
+						title = 'Belanja'
+						description = 'Pakaian atau barang pribadi'
 						break
-					case 'Education':
-						amount = (Math.random() * 150 + 25).toFixed(2) // $25-175
-						title = 'Educational Expense'
-						description = 'Books or online course'
+					case 'Pendidikan':
+						amount = Math.floor((Math.random() * 2250000 + 375000)) // Rp 375rb - 2.625jt
+						title = 'Biaya Pendidikan'
+						description = 'Buku atau kursus online'
 						break
-					case 'Insurance':
-						amount = (Math.random() * 200 + 100).toFixed(2) // $100-300
-						title = 'Insurance Premium'
-						description = 'Monthly insurance payment'
+					case 'Asuransi':
+						amount = Math.floor((Math.random() * 3000000 + 1500000)) // Rp 1.5jt - 4.5jt
+						title = 'Premi Asuransi'
+						description = 'Pembayaran asuransi bulanan'
 						break
 					default:
-						amount = (Math.random() * 100 + 20).toFixed(2) // $20-120
-						title = 'Miscellaneous'
-						description = 'Other expense'
+						amount = Math.floor((Math.random() * 1500000 + 300000)) // Rp 300rb - 1.8jt
+						title = 'Lain-lain'
+						description = 'Pengeluaran lainnya'
 				}
 
 				transactions.push({
-					amount: parseFloat(amount),
+					amount: amount,
 					title,
 					description,
 					type: 'EXPENSE' as TransactionType,
