@@ -14,14 +14,14 @@ import useDeleteTransaction from '@/hooks/transaction/useDeleteTransaction'
 import ActionTransactionDialog from './ActionTransactionDialog'
 import useIntersectionObserver from '@/hooks/useIntersectionObserver'
 import EmptyStateWrapper from '@/components/utils/EmptyStateWrapper'
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo } from 'react'
 import SearchInput from '@/components/utils/SearchInput'
 import FilterDialog from '../FilterDialog'
 import { IFilterField } from '@/types/form'
 import useGetCategory from '@/hooks/category/useGetCategory'
-import useUtilsSearchParams from '@/hooks/useUpdateSearchParams'
-import { formatDate, parseDate } from '@/lib/utils'
+import { parseDate } from '@/lib/utils'
 import { useSearchParams } from 'next/navigation'
+import useFilterParams from '@/hooks/useFilterParams'
 
 interface ITransactionTableProps {
 	limit: number | 'lazy'
@@ -35,76 +35,11 @@ const TransactionTable = ({
 	showMore = false,
 }: ITransactionTableProps) => {
 	const searchParams = useSearchParams()
-	const [filters, setFilters] = useState<Record<string, any>>({
-		dateRange: {
-			to: parseDate(searchParams?.get('to') || '') || undefined,
-			from: parseDate(searchParams?.get('from') || '') || undefined,
-		},
-		category: searchParams?.get('category') || undefined,
-		type: searchParams?.get('type') || undefined,
-		sort: searchParams?.get('sort') || undefined,
-	})
-
-	const {
-		data: transactions,
-		isLoading,
-		fetchNextPage,
-		hasNextPage,
-		isFetchingNextPage,
-	} = useGetTransaction({
-		limit: limit === 'lazy' ? null : limit,
-		categoryId: filters?.category,
-		startDate: parseDate(filters?.dateRange?.from),
-		endDate: parseDate(filters?.dateRange?.to),
-		search: searchParams?.get('search') || undefined,
-		sort: filters?.sort,
-		type: filters?.type,
-	})
 	const { data: categories } = useGetCategory()
-
-	const loadMoreRef = useIntersectionObserver<HTMLDivElement>(
-		() => {
-			if (hasNextPage && !isFetchingNextPage) {
-				fetchNextPage()
-			}
-		},
-		{ threshold: 0.1 }
-	)
-
-	const { mutate: deleteTransaction } = useDeleteTransaction()
-	const { updateMultipleSearchParams } = useUtilsSearchParams()
-
-	const transactionsFlat = useMemo(
-		() => transactions?.pages.flatMap((page) => page.data || []) || [],
-		[transactions?.pages]
-	)
-
-	const isEmpty = useMemo(
-		() => transactionsFlat?.length === 0 && !isLoading,
-		[transactions, isLoading]
-	)
-
-	const handleFilterSubmit = (values: Record<string, any>) => {
-		setFilters(values)
-	}
-
-	useEffect(() => {
-		updateMultipleSearchParams({
-			from: formatDate(filters?.dateRange?.from) || undefined,
-			to: formatDate(filters?.dateRange?.to) || undefined,
-			sort: filters?.sort,
-			category: filters?.category,
-			type: filters?.type,
-		})
-	}, [filters])
-
-	const handleDelete = (id: number) => {
-		deleteTransaction({ id })
-	}
 
 	const filterFields: IFilterField[] = [
 		{
-			name: 'dateRange',
+			name: 'date',
 			label: 'Date Range',
 			fieldType: 'date-range',
 			placeholder: 'From date',
@@ -134,6 +69,49 @@ const TransactionTable = ({
 			placeholder: 'Select sort order',
 		},
 	]
+
+	const { filters, handleFilterSubmit } = useFilterParams(filterFields)
+
+	const {
+		data: transactions,
+		isLoading,
+		fetchNextPage,
+		hasNextPage,
+		isFetchingNextPage,
+	} = useGetTransaction({
+		limit: limit === 'lazy' ? null : limit,
+		categoryId: filters?.category,
+		startDate: parseDate(filters?.date?.from),
+		endDate: parseDate(filters?.date?.to),
+		search: searchParams?.get('search') || undefined,
+		sort: filters?.sort,
+		type: filters?.type,
+	})
+
+	const loadMoreRef = useIntersectionObserver<HTMLDivElement>(
+		() => {
+			if (hasNextPage && !isFetchingNextPage) {
+				fetchNextPage()
+			}
+		},
+		{ threshold: 0.1 }
+	)
+
+	const { mutate: deleteTransaction } = useDeleteTransaction()
+
+	const transactionsFlat = useMemo(
+		() => transactions?.pages.flatMap((page) => page.data || []) || [],
+		[transactions?.pages]
+	)
+
+	const isEmpty = useMemo(
+		() => transactionsFlat?.length === 0 && !isLoading,
+		[transactions, isLoading]
+	)
+
+	const handleDelete = (id: number) => {
+		deleteTransaction({ id })
+	}
 
 	return (
 		<div>

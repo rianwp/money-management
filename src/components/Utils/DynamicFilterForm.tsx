@@ -110,7 +110,7 @@ const renderField = (field: IFilterField, formField: any) => {
 		case 'date-range':
 			return (
 				<div className="flex flex-col gap-2">
-					<div className="flex gap-2">
+					<div className="flex md:flex-row flex-col gap-2">
 						<DatePicker
 							date={formField.value?.from}
 							onDateChange={(date) => {

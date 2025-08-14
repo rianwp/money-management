@@ -38,7 +38,11 @@ const useUtilsSearchParams = () => {
 		router.push(`?${params.toString()}`)
 	}
 
-	return { updateSearchParams, updateMultipleSearchParams }
+	const clearSearchParams = () => {
+		router.push(window.location.pathname)
+	}
+
+	return { updateSearchParams, updateMultipleSearchParams, clearSearchParams }
 }
 
 export default useUtilsSearchParams

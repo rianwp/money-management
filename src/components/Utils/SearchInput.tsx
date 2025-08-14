@@ -4,7 +4,7 @@ import ButtonLoader from './ButtonLoader'
 import { useState, useEffect } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { useDebouncedCallback } from 'use-debounce'
-import useUtilsSearchParams from '@/hooks/useUpdateSearchParams'
+import useUtilsSearchParams from '@/hooks/useUtilsSearchParams'
 
 interface ISearchInputProps {
 	isLoading: boolean

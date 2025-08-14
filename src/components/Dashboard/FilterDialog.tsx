@@ -1,17 +1,19 @@
+'use client'
+
+import { useState } from 'react'
 import { Filter } from 'lucide-react'
 import {
 	Dialog,
-	DialogClose,
 	DialogContent,
+	DialogDescription,
 	DialogFooter,
 	DialogHeader,
 	DialogTitle,
-	DialogTrigger,
 } from '../ui/dialog'
 import ButtonLoader from '../utils/ButtonLoader'
-import { Button } from '../ui/button'
 import DynamicFilterForm from '../utils/DynamicFilterForm'
 import { IFilterField } from '@/types/form'
+import useUtilsSearchParams from '@/hooks/useUtilsSearchParams'
 
 interface IFilterDialogProps {
 	disabled?: boolean
@@ -28,47 +30,70 @@ const FilterDialog = ({
 	isLoading,
 	fields,
 }: IFilterDialogProps) => {
+	const [open, setOpen] = useState(false)
+	const { clearSearchParams } = useUtilsSearchParams()
+
+	const handleClear = () => {
+		clearSearchParams()
+		setOpen(false)
+	}
+
+	const onSubmit = (values: Record<string, any>) => {
+		handleSubmit(values)
+		setOpen(false)
+	}
+
 	return (
-		<Dialog>
-			<DialogTrigger asChild>
-				<ButtonLoader
-					variant="outline"
-					size="lg"
-					isLoading={isLoading}
-					disabled={disabled}
-					icon={<Filter />}
-				>
-					Filter
-				</ButtonLoader>
-			</DialogTrigger>
-			<DialogContent>
-				<DialogHeader>
-					<DialogTitle>Filter</DialogTitle>
-				</DialogHeader>
+		<>
+			<ButtonLoader
+				variant="outline"
+				size="lg"
+				isLoading={isLoading}
+				disabled={disabled}
+				icon={<Filter />}
+				onClick={() => setOpen(true)}
+			>
+				Filter
+			</ButtonLoader>
 
-				<DynamicFilterForm
-					fields={fields}
-					onSubmit={handleSubmit}
-					defaultValues={defaultValues}
-				/>
+			<Dialog open={open} onOpenChange={setOpen}>
+				{open && (
+					<DialogContent>
+						<DialogHeader>
+							<DialogTitle>Filter</DialogTitle>
+							<DialogDescription>
+								Add some filter to filter the data
+							</DialogDescription>
+						</DialogHeader>
 
-				<DialogFooter className="sm:grid gap-2 grid-cols-2">
-					<DialogClose asChild>
-						<Button variant="outline" type="button" className="w-full">
-							Cancel
-						</Button>
-					</DialogClose>
-					<ButtonLoader
-						type="submit"
-						form="dynamic-filter-form"
-						className="w-full"
-						isLoading={isLoading}
-					>
-						Apply
-					</ButtonLoader>
-				</DialogFooter>
-			</DialogContent>
-		</Dialog>
+						<DynamicFilterForm
+							fields={fields}
+							onSubmit={onSubmit}
+							defaultValues={defaultValues}
+						/>
+
+						<DialogFooter className="sm:grid gap-2 grid-cols-2">
+							<ButtonLoader
+								className="w-full"
+								variant="destructive"
+								isLoading={isLoading}
+								onClick={handleClear}
+							>
+								Clear
+							</ButtonLoader>
+							<ButtonLoader
+								type="submit"
+								form="dynamic-filter-form"
+								className="w-full"
+								isLoading={isLoading}
+							>
+								Apply
+							</ButtonLoader>
+						</DialogFooter>
+					</DialogContent>
+				)}
+			</Dialog>
+		</>
 	)
 }
 
