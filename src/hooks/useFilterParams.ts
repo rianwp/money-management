@@ -7,8 +7,9 @@ import useUtilsSearchParams from './useUtilsSearchParams'
 const useFilterParams = (fieldInput: IFilterField[]) => {
 	const searchParams = useSearchParams()
 	const { updateMultipleSearchParams } = useUtilsSearchParams()
+	const [skipNextSync, setSkipNextSync] = useState(false)
 
-	const getUrlParams = () =>
+	const mapSearchParamsToFilters = () =>
 		fieldInput.reduce((acc, field) => {
 			const name = field.name
 			const type = field.fieldType
@@ -27,10 +28,8 @@ const useFilterParams = (fieldInput: IFilterField[]) => {
 			return acc
 		}, {} as Record<string, any>)
 
-	const [filters, setFilters] = useState<Record<string, any>>(getUrlParams())
-
-	const handleFilterSubmit = (values: Record<string, any>) => {
-		const updatedFilters = fieldInput.reduce((acc, field) => {
+	const mapValuesToSearchParams = (values: Record<string, any>) =>
+		fieldInput.reduce((acc, field) => {
 			const name = field.name
 			const type = field.fieldType
 			const value = values?.[name]
@@ -47,11 +46,23 @@ const useFilterParams = (fieldInput: IFilterField[]) => {
 			return acc
 		}, {} as Record<string, any>)
 
-		updateMultipleSearchParams(updatedFilters)
+	const [filters, setFilters] = useState<Record<string, any>>(
+		mapSearchParamsToFilters()
+	)
+
+	const handleFilterSubmit = (values: Record<string, any>) => {
+		setFilters(values)
+		setSkipNextSync(true)
+		const updatedParams = mapValuesToSearchParams(values)
+		updateMultipleSearchParams(updatedParams)
 	}
 
 	useEffect(() => {
-		setFilters(getUrlParams())
+		if (skipNextSync) {
+			setSkipNextSync(false)
+			return
+		}
+		setFilters(mapSearchParamsToFilters())
 	}, [searchParams])
 
 	return { handleFilterSubmit, filters }
