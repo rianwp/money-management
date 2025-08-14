@@ -14,7 +14,11 @@ export const transactionCreateSchema = z.object({
 			invalid_type_error: 'Date must be a valid date',
 		})
 		.optional(),
-	amount: z.number().positive('Amount must be a positive number'),
+	amount: z
+		.number({
+			invalid_type_error: 'Amount must be a positive number',
+		})
+		.positive('Amount must be a positive number'),
 })
 
 export const transactionUpdateSchema = updateSchema(transactionCreateSchema)
