@@ -6,7 +6,8 @@ import { IApiResponse } from '@/types/api'
 import { transactionQuerySchema } from '@/types/transaction/api'
 import { NextRequest, NextResponse } from 'next/server'
 import { User as UserAuth } from 'next-auth'
-import XLSX from 'xlsx'
+import * as XLSX from 'xlsx'
+import { formatDate } from '@/lib/utils'
 
 export const GET = async (
 	req: NextRequest
@@ -74,7 +75,7 @@ export const GET = async (
 		const mappedTransaction = transaction.map((item, index) => ({
 			No: index + 1,
 			'Transaction Name': item.title,
-			Amount: item.amount,
+			'Amount (in Rupiah)': Number(item.amount),
 			Description: item.description,
 			'Transaction Date': item.date,
 			Type: item.type,
@@ -90,7 +91,7 @@ export const GET = async (
 		ws['!cols'] = [
 			{ width: 5 }, // No
 			{ width: 25 }, // Transaction Name
-			{ width: 15 }, // Amount
+			{ width: 20 }, // Amount
 			{ width: 30 }, // Description
 			{ width: 15 }, // Transaction Date
 			{ width: 10 }, // Type
@@ -103,9 +104,7 @@ export const GET = async (
 
 		const buffer = XLSX.write(wb, { type: 'buffer', bookType: 'xlsx' })
 
-		const filename = `transactions_export_${
-			new Date().toISOString().split('T')[0]
-		}.xlsx`
+		const filename = `transactions_export_${formatDate(new Date())}.xlsx`
 
 		return new NextResponse(buffer, {
 			status: 200,

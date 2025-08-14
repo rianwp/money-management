@@ -22,6 +22,7 @@ import useGetCategory from '@/hooks/category/useGetCategory'
 import { parseDate } from '@/lib/utils'
 import { useSearchParams } from 'next/navigation'
 import useFilterParams from '@/hooks/useFilterParams'
+import useExportTransaction from '@/hooks/transaction/useExportTransaction'
 
 interface ITransactionTableProps {
 	limit: number | 'lazy'
@@ -36,6 +37,7 @@ const TransactionTable = ({
 }: ITransactionTableProps) => {
 	const searchParams = useSearchParams()
 	const { data: categories } = useGetCategory()
+	const { mutate: exportMutate } = useExportTransaction()
 
 	const filterFields: IFilterField[] = [
 		{
@@ -71,6 +73,10 @@ const TransactionTable = ({
 	]
 
 	const { filters, handleFilterSubmit } = useFilterParams(filterFields)
+
+	const handleExport = () => {
+		exportMutate(filters)
+	}
 
 	const {
 		data: transactions,
@@ -130,6 +136,7 @@ const TransactionTable = ({
 							isLoading={isLoading}
 							disabled={isEmpty}
 							icon={<Download />}
+							onClick={handleExport}
 						>
 							Export
 						</ButtonLoader>
