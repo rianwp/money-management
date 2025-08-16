@@ -120,15 +120,19 @@ const TransactionTable = ({
 	}
 
 	return (
-		<div>
+		<section>
 			{showExtension && (
-				<div className="flex flex-row justify-between md:gap-x-4 gap-x-2 mb-4">
-					<SearchInput isLoading={isLoading} />
+				<div className="flex flex-row flex-wrap justify-between md:gap-4 gap-2 mb-4">
+					<SearchInput
+						isLoading={isLoading}
+						placeholder="Search Transactions..."
+					/>
 					<div className="flex flex-row md:gap-x-4 gap-x-2">
 						<FilterDialog
 							fields={filterFields}
 							handleSubmit={handleFilterSubmit}
 							defaultValues={filters}
+							description="Filter your transactions using the options below"
 						/>
 						<ButtonLoader
 							variant="outline"
@@ -215,7 +219,7 @@ const TransactionTable = ({
 					) : null}
 				</CardContent>
 			</Card>
-		</div>
+		</section>
 	)
 }
 

@@ -39,7 +39,7 @@ import { IconName } from '@/types/icon'
 import { TransactionType } from '@prisma/client'
 
 interface IActionCategoryDialogProps {
-	type: TransactionType
+	type?: TransactionType
 	children: React.ReactNode
 }
 
@@ -109,7 +109,7 @@ const iconNames: IconName[] = [
 ]
 
 const ActionCategoryDialog = ({
-	type = 'INCOME',
+	type = TransactionType.INCOME,
 	children,
 }: IActionCategoryDialogProps) => {
 	const [open, setOpen] = useState(false)
@@ -121,7 +121,6 @@ const ActionCategoryDialog = ({
 			type,
 			description: '',
 			icon: iconNames[0],
-			monthlyTarget: undefined,
 		},
 	})
 
@@ -131,6 +130,7 @@ const ActionCategoryDialog = ({
 			monthlyTarget: values.monthlyTarget
 				? Number(values.monthlyTarget)
 				: undefined,
+			target: values.target ? Number(values.target) : undefined,
 		})
 		setOpen(false)
 		form.reset({
@@ -139,6 +139,7 @@ const ActionCategoryDialog = ({
 			description: '',
 			icon: iconNames[0],
 			monthlyTarget: undefined,
+			target: undefined,
 		})
 	}
 
@@ -239,14 +240,48 @@ const ActionCategoryDialog = ({
 								<FormItem>
 									<FormLabel>Monthly Target</FormLabel>
 									<FormControl>
-										<Input
-											placeholder="Monthly target (optional)"
-											type="number"
-											{...field}
-											onChange={(e) =>
-												field.onChange(e.target.valueAsNumber || e.target.value)
-											}
-										/>
+										<div className="flex flex-row items-center gap-x-2">
+											<span className="text-gray-500">Rp</span>
+											<Input
+												placeholder="Monthly target (optional)"
+												type="number"
+												{...field}
+												value={field.value ?? ''}
+												onChange={(e) => {
+													const value = e.target.value
+														? Number(e.target.value)
+														: ''
+													field.onChange(value)
+												}}
+											/>
+										</div>
+									</FormControl>
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
+						<FormField
+							control={form.control}
+							name="target"
+							render={({ field }) => (
+								<FormItem>
+									<FormLabel>Target</FormLabel>
+									<FormControl>
+										<div className="flex flex-row items-center gap-x-2">
+											<span className="text-gray-500">Rp</span>
+											<Input
+												placeholder="Target (optional)"
+												type="number"
+												{...field}
+												value={field.value ?? ''}
+												onChange={(e) => {
+													const value = e.target.value
+														? Number(e.target.value)
+														: ''
+													field.onChange(value)
+												}}
+											/>
+										</div>
 									</FormControl>
 									<FormMessage />
 								</FormItem>

@@ -24,21 +24,6 @@ export const GET = async (
 			include: searchParams.get('include'),
 		})
 
-		// non scalable function
-		const includeTransactionsCount = query?.include?.includes(
-			'transactions_count'
-		)
-			? {
-					include: {
-						_count: {
-							select: {
-								transactions: true,
-							},
-						},
-					},
-			  }
-			: undefined
-
 		const page = Number(query.page) || 1
 		const limit = Number(query.limit) || 10
 		const skip = (page - 1) * limit
@@ -71,13 +56,94 @@ export const GET = async (
 			},
 			skip,
 			take: limit,
-			...includeTransactionsCount,
+			include: {
+				...(query?.include?.includes('transactions_count') && {
+					_count: {
+						select: {
+							transactions: true,
+						},
+					},
+				}),
+				...{
+					...(query?.include?.includes('transactions_amount') ||
+					query?.include?.includes('last_activity') ||
+					query?.include?.includes('monthly_budget')
+						? {
+								transactions: {
+									select: {
+										amount: true,
+										createdAt: true,
+										updatedAt: query?.include?.includes('last_activity'),
+									},
+									orderBy: {
+										updatedAt: 'desc',
+									},
+								},
+						  }
+						: {}),
+				},
+			},
 		})
+
+		const transformCategory = (category: any) => {
+			const transformed = { ...category }
+
+			if (
+				query?.include?.includes('transactions_amount') &&
+				category.transactions
+			) {
+				transformed.transactionsAmount = category.transactions.reduce(
+					(sum: number, tx: any) => Number(sum) + (Number(tx.amount) || 0),
+					0
+				)
+			}
+
+			if (query?.include?.includes('monthly_budget') && category.transactions) {
+				const startOfMonth = new Date(
+					new Date().getFullYear(),
+					new Date().getMonth(),
+					1
+				)
+				const endOfMonth = new Date(
+					new Date().getFullYear(),
+					new Date().getMonth() + 1,
+					0
+				)
+				transformed.monthlyBudget = category.transactions
+					.filter((tx: any) => {
+						const txDate = new Date(tx.createdAt)
+						return txDate >= startOfMonth && txDate <= endOfMonth
+					})
+					.reduce(
+						(sum: number, tx: any) => Number(sum) + (Number(tx.amount) || 0),
+						0
+					)
+			}
+
+			if (
+				query?.include?.includes('last_activity') &&
+				category.transactions?.length > 0
+			) {
+				transformed.lastActivity = category.transactions.reduce(
+					(latest: any, current: any) =>
+						new Date(current.updatedAt) > new Date(latest.updatedAt)
+							? current
+							: latest
+				).updatedAt
+			}
+
+			return {
+				...transformed,
+				transactions: undefined,
+			}
+		}
+
+		const transformedCategory = category.map(transformCategory)
 
 		return NextResponse.json(
 			{
 				success: true,
-				data: category,
+				data: transformedCategory,
 			},
 			{
 				status: 200,
@@ -95,10 +161,8 @@ export const POST = async (
 		const { id: userId } = (await getCurrentUser()) as UserAuth
 
 		const body = await req.json()
-		const { name, type, description, icon, monthlyTarget } = validateZod(
-			categoryCreateSchema,
-			body
-		)
+		const { name, type, description, icon, monthlyTarget, target } =
+			validateZod(categoryCreateSchema, body)
 
 		const category = await prisma.category.create({
 			data: {
@@ -107,6 +171,7 @@ export const POST = async (
 				description,
 				icon,
 				monthlyTarget,
+				target,
 				userId: Number(userId),
 			},
 		})

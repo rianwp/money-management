@@ -21,6 +21,7 @@ interface IFilterDialogProps {
 	fields: IFilterField[]
 	handleSubmit: (values: Record<string, any>) => void
 	defaultValues: Record<string, any>
+	description?: string
 }
 
 const FilterDialog = ({
@@ -29,6 +30,7 @@ const FilterDialog = ({
 	disabled,
 	isLoading,
 	fields,
+	description,
 }: IFilterDialogProps) => {
 	const [open, setOpen] = useState(false)
 	const { clearSearchParams } = useUtilsSearchParams()
@@ -62,7 +64,7 @@ const FilterDialog = ({
 						<DialogHeader>
 							<DialogTitle>Filter</DialogTitle>
 							<DialogDescription>
-								Add some filter to filter the data
+								{description || 'Filter your data using the options below'}
 							</DialogDescription>
 						</DialogHeader>
 

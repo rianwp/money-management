@@ -31,7 +31,8 @@ model Category {
   type          TransactionType
   description   String?
   isActive      Boolean     @default(true)
-  monthlyTarget Int         @default(0)   
+  monthlyTarget Int?        @default(0)
+  target        Int?        @default(0)
   createdAt     DateTime    @default(now())
   updatedAt     DateTime    @updatedAt
 
@@ -40,7 +41,7 @@ model Category {
   user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   // Relations
-  transactions Transaction[]
+  transactions        Transaction[]
 
   // Ensure unique category names per user and type
   @@unique([userId, name, type])

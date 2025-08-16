@@ -48,10 +48,8 @@ export const PUT = async (
 
 		const { id } = await params
 		const body = await req.json()
-		const { description, icon, monthlyTarget, name, type } = validateZod(
-			categoryUpdateSchema,
-			body
-		)
+		const { description, icon, monthlyTarget, name, type, target } =
+			validateZod(categoryUpdateSchema, body)
 
 		const category = await prisma.category.update({
 			where: {
@@ -62,6 +60,7 @@ export const PUT = async (
 				description,
 				icon,
 				monthlyTarget,
+				target,
 				name,
 				type,
 			},

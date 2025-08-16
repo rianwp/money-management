@@ -64,7 +64,7 @@ const SearchInput = ({
 	}, [searchParams, paramName])
 
 	return (
-		<div className="relative max-w-[400px]">
+		<div className="relative min-w-[150px] max-w-[400px] flex-1">
 			<Input
 				placeholder={placeholder}
 				type="text"
