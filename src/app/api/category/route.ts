@@ -4,6 +4,7 @@ import { handleError } from '@/lib/error'
 import { validateZod } from '@/lib/validation'
 import { IApiResponse } from '@/types/api'
 import { categoryCreateSchema, categoryQuerySchema } from '@/types/category/api'
+import { Prisma } from '@prisma/client'
 import { User as UserAuth } from 'next-auth'
 import { NextRequest, NextResponse } from 'next/server'
 
@@ -186,6 +187,22 @@ export const POST = async (
 			}
 		)
 	} catch (error) {
+		if (error instanceof Prisma.PrismaClientKnownRequestError) {
+			if (error.code === 'P2002') {
+				return NextResponse.json(
+					{
+						success: false,
+						error: {
+							code: 'NAME_USED',
+							message: 'Name of category already used',
+						},
+					},
+					{
+						status: 400,
+					}
+				)
+			}
+		}
 		return handleError(error)
 	}
 }

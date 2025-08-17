@@ -2,37 +2,26 @@
 
 import { axiosInstance, handleAxiosError } from '@/lib/fetch'
 import { IApiResponse, IIDUniversal } from '@/types/api'
-import { Transaction } from '@prisma/client'
+import { ICategoryUpdateRequest } from '@/types/category/api'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { AxiosError } from 'axios'
 import { toast } from 'sonner'
 
-const useDeleteTransaction = () => {
+const useUpdateCategory = () => {
 	const queryClient = useQueryClient()
 
 	return useMutation({
-		mutationFn: async (payload: IIDUniversal) => {
-			const { data } = await axiosInstance.delete(`/transaction/${payload.id}`)
-
+		mutationFn: async (payload: ICategoryUpdateRequest & IIDUniversal) => {
+			const { data } = await axiosInstance.put(
+				`/category/${payload.id}`,
+				payload
+			)
 			return data
 		},
-
-		onSuccess: (data: IApiResponse<Transaction>) => {
+		onSuccess: (data: IApiResponse) => {
+			queryClient.invalidateQueries({ queryKey: ['getCategory'] })
 			if (data.success) {
-				queryClient.invalidateQueries({
-					queryKey: ['getTransaction'],
-					exact: false,
-				})
-				queryClient.invalidateQueries({
-					queryKey: ['getUserGrowth'],
-					exact: false,
-				})
-				queryClient.invalidateQueries({
-					queryKey: ['getUserBalance'],
-					exact: false,
-				})
-
-				toast('Success delete transaction', {
+				toast('Success update category', {
 					position: 'top-right',
 					closeButton: true,
 					className: 'toast--success',
@@ -42,7 +31,7 @@ const useDeleteTransaction = () => {
 		onError: (error: AxiosError<IApiResponse>) => {
 			const errorResponse = handleAxiosError(error)
 			if (!errorResponse?.success) {
-				toast('Error when delete transaction', {
+				toast('Error when update category', {
 					description: errorResponse?.error?.message,
 					position: 'top-right',
 					closeButton: true,
@@ -53,4 +42,4 @@ const useDeleteTransaction = () => {
 	})
 }
 
-export default useDeleteTransaction
+export default useUpdateCategory

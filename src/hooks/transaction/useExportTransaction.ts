@@ -1,10 +1,11 @@
 'use client'
 
-import { axiosInstance } from '@/lib/fetch'
+import { axiosInstance, handleAxiosError } from '@/lib/fetch'
 import { formatDate } from '@/lib/utils'
 import { IApiResponse } from '@/types/api'
 import { ITransactionQuery } from '@/types/transaction/api'
 import { useMutation } from '@tanstack/react-query'
+import { AxiosError } from 'axios'
 import { toast } from 'sonner'
 
 const useExportTransaction = () => {
@@ -53,31 +54,11 @@ const useExportTransaction = () => {
 			})
 		},
 
-		onError: (error: any) => {
-			console.log(error)
-			if (error.response?.data instanceof Blob) {
-				error.response.data.text().then((text: string) => {
-					try {
-						const errorData = JSON.parse(text)
-						toast('Error when exporting transaction', {
-							description: errorData.error?.message || 'Unknown error occurred',
-							position: 'top-right',
-							closeButton: true,
-							className: 'toast--error',
-						})
-					} catch {
-						toast('Error when exporting transaction', {
-							description: 'Failed to export file',
-							position: 'top-right',
-							closeButton: true,
-							className: 'toast--error',
-						})
-					}
-				})
-			} else {
-				const apiError = error as IApiResponse
-				toast('Error when exporting transaction', {
-					description: apiError.error?.message || 'Unknown error occurred',
+		onError: (error: AxiosError<IApiResponse>) => {
+			const errorResponse = handleAxiosError(error)
+			if (!errorResponse?.success) {
+				toast('Error when export transaction', {
+					description: errorResponse?.error?.message,
 					position: 'top-right',
 					closeButton: true,
 					className: 'toast--error',

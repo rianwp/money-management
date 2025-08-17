@@ -14,6 +14,8 @@ import ActionCategoryDialog from './ActionCategoryDialog'
 import CategoryTypeSwitch from './CategoryTypeSwitch'
 import CategoryCard from './CategoryCard'
 import { IconName } from '@/types/icon'
+import { Skeleton } from '@/components/ui/skeleton'
+import EmptyStateWrapper from '@/components/utils/EmptyStateWrapper'
 
 const filterFields: IFilterField[] = [
 	{
@@ -97,21 +99,30 @@ const CategoryList = () => {
 				</div>
 			</div>
 			<div className="grid xl:grid-cols-3 lg:grid-cols-2 grid-cols-1 md:gap-6 gap-4">
-				{categoriesFlat.map((item, index) => (
-					<CategoryCard
-						key={index}
-						budget={item.transactionsAmount || 0}
-						description={item.description || ''}
-						icon={item.icon as IconName}
-						lastActivity={item.lastActivity || item.updatedAt}
-						title={item.name}
-						transactionsCount={item?._count.transactions || 0}
-						monthlyBudget={item.monthlyBudget || 0}
-						monthlyTarget={item.monthlyTarget}
-						target={item.target}
-						type={item.type}
-					/>
-				))}
+				<EmptyStateWrapper isEmpty={isEmpty} message="You have no category yet">
+					{categoriesFlat.map((item, index) => (
+						<CategoryCard
+							key={index}
+							id={item.id}
+							budget={item.transactionsAmount || 0}
+							description={item.description || ''}
+							icon={item.icon as IconName}
+							lastActivity={item.lastActivity || item.updatedAt}
+							title={item.name}
+							transactionsCount={item?._count.transactions || 0}
+							monthlyBudget={item.monthlyBudget || 0}
+							monthlyTarget={item.monthlyTarget}
+							target={item.target}
+							type={item.type}
+						/>
+					))}
+					{hasNextPage && <div ref={loadMoreRef} className="-mt-4" />}
+
+					{(isLoading || isFetchingNextPage) &&
+						Array.from({ length: 9 }).map((_, i) => (
+							<Skeleton key={i} className="h-[358px] w-full rounded-md" />
+						))}
+				</EmptyStateWrapper>
 			</div>
 		</section>
 	)

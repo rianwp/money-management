@@ -1,10 +1,11 @@
 'use client'
 
-import { axiosInstance } from '@/lib/fetch'
+import { axiosInstance, handleAxiosError } from '@/lib/fetch'
 import { IApiResponse } from '@/types/api'
 import { ITransactionCreateRequest } from '@/types/transaction/api'
 import { Transaction } from '@prisma/client'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { AxiosError } from 'axios'
 import { toast } from 'sonner'
 
 const useCreateTransaction = () => {
@@ -38,10 +39,11 @@ const useCreateTransaction = () => {
 				})
 			}
 		},
-		onError: (error: IApiResponse) => {
-			if (!error.success) {
+		onError: (error: AxiosError<IApiResponse>) => {
+			const errorResponse = handleAxiosError(error)
+			if (!errorResponse?.success) {
 				toast('Error when add transaction', {
-					description: error.error?.message,
+					description: errorResponse?.error?.message,
 					position: 'top-right',
 					closeButton: true,
 					className: 'toast--error',

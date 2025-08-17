@@ -1,5 +1,6 @@
+import { IApiResponse } from '@/types/api'
 import { isServer, QueryClient } from '@tanstack/react-query'
-import axios from 'axios'
+import axios, { AxiosError } from 'axios'
 
 export const queryClient = new QueryClient({
 	defaultOptions: {
@@ -27,3 +28,11 @@ export const getQueryClient = () => {
 export const axiosInstance = axios.create({
 	baseURL: '/api',
 })
+
+export const handleAxiosError = (error: AxiosError<IApiResponse>) => {
+	if (axios.isAxiosError(error)) {
+		return error.response?.data
+	}
+
+	return null
+}

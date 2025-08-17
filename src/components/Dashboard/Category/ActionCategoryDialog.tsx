@@ -37,10 +37,14 @@ import ButtonLoader from '@/components/utils/ButtonLoader'
 import DynamicIcon from '@/components/utils/DynamicIcon'
 import { IconName } from '@/types/icon'
 import { TransactionType } from '@prisma/client'
+import useUpdateCategory from '@/hooks/category/useUpdateCategory'
 
 interface IActionCategoryDialogProps {
 	type?: TransactionType
 	children: React.ReactNode
+	defaultValues?: Partial<ICategoryCreateRequest> & {
+		id?: number
+	}
 }
 
 const iconNames: IconName[] = [
@@ -111,9 +115,15 @@ const iconNames: IconName[] = [
 const ActionCategoryDialog = ({
 	type = TransactionType.INCOME,
 	children,
+	defaultValues,
 }: IActionCategoryDialogProps) => {
 	const [open, setOpen] = useState(false)
-	const { mutateAsync, isPending } = useCreateCategory()
+	const { mutateAsync: createCategory, isPending: isCreatePending } =
+		useCreateCategory()
+	const { mutateAsync: updateCategory, isPending: isUpdatePending } =
+		useUpdateCategory()
+
+	const isEditMode = !!defaultValues && typeof defaultValues.id === 'number'
 	const form = useForm<ICategoryCreateRequest>({
 		resolver: zodResolver(categoryCreateSchema),
 		defaultValues: {
@@ -121,17 +131,30 @@ const ActionCategoryDialog = ({
 			type,
 			description: '',
 			icon: iconNames[0],
+			monthlyTarget: undefined,
+			target: undefined,
+			...defaultValues,
 		},
 	})
 
 	const onSubmit = async (values: ICategoryCreateRequest) => {
-		await mutateAsync({
+		const processedValues = {
 			...values,
 			monthlyTarget: values.monthlyTarget
 				? Number(values.monthlyTarget)
 				: undefined,
 			target: values.target ? Number(values.target) : undefined,
-		})
+		}
+
+		if (isEditMode && defaultValues?.id) {
+			await updateCategory({
+				...processedValues,
+				id: defaultValues.id,
+			})
+		} else {
+			await createCategory(processedValues)
+		}
+
 		setOpen(false)
 		form.reset({
 			name: '',
@@ -148,9 +171,13 @@ const ActionCategoryDialog = ({
 			<DialogTrigger asChild>{children}</DialogTrigger>
 			<DialogContent>
 				<DialogHeader>
-					<DialogTitle>Add Category</DialogTitle>
+					<DialogTitle>
+						{isEditMode ? 'Update Category' : 'Add Category'}
+					</DialogTitle>
 					<DialogDescription>
-						Add a new category for your transactions.
+						{isEditMode
+							? 'Update existing category.'
+							: 'Add a new category for your transactions.'}
 					</DialogDescription>
 				</DialogHeader>
 				<Form {...form}>
@@ -296,10 +323,10 @@ const ActionCategoryDialog = ({
 							<ButtonLoader
 								onClick={form.handleSubmit(onSubmit)}
 								type="submit"
-								isLoading={isPending}
+								isLoading={isEditMode ? isUpdatePending : isCreatePending}
 								className="w-full"
 							>
-								Add
+								{isEditMode ? 'Update' : 'Add'}
 							</ButtonLoader>
 						</DialogFooter>
 					</form>
