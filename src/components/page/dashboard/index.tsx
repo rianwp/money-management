@@ -10,10 +10,28 @@ import {
 	ProgressCardValue,
 } from '@/components/dashboard/UserSummary/ProgressCard'
 import useGetUserBalance from '@/hooks/user/useGetUserBalance'
+import useGetCategory from '@/hooks/category/useGetCategory'
+import CategoryCard from '@/components/dashboard/Category/CategoryCard'
+import { IconName } from '@/types/icon'
+import { buttonVariants } from '@/components/ui/button'
+import Link from 'next/link'
+import EmptyStateWrapper from '@/components/utils/EmptyStateWrapper'
+import { useMemo } from 'react'
+import { Skeleton } from '@/components/ui/skeleton'
 
 const DashboardPage = () => {
 	const { data: growth, isLoading: isGrowthLoading } = useGetUserGrowth()
 	const { data: balance, isLoading: isBalanceLoading } = useGetUserBalance()
+	const { data: categories, isLoading: isCategoriesLoading } = useGetCategory({
+		limit: 2,
+		include:
+			'transactions_count,transactions_amount,last_activity,monthly_budget',
+	})
+
+	const isEmpty = useMemo(
+		() => categories?.data?.length === 0 && !isCategoriesLoading,
+		[categories, isCategoriesLoading]
+	)
 
 	return (
 		<div className="flex flex-col gap-y-8 w-full">
@@ -64,6 +82,40 @@ const DashboardPage = () => {
 			<div className="grid grid-cols-3 w-full gap-8">
 				<div className="lg:col-span-2 col-span-3 flex flex-col gap-y-8">
 					<TransactionTable limit={5} showMore />
+				</div>
+				<div className="lg:col-span-1 col-span-3 flex flex-col gap-y-8">
+					<EmptyStateWrapper
+						isEmpty={isEmpty}
+						message="You have no category yet"
+					>
+						{isCategoriesLoading
+							? Array.from({ length: 2 }).map((_, i) => (
+									<Skeleton key={i} className="h-[200px] w-full rounded-md" />
+							  ))
+							: categories?.data?.map((item, index) => (
+									<CategoryCard
+										key={index}
+										id={item.id}
+										budget={item.transactionsAmount || 0}
+										description={item.description || ''}
+										icon={item.icon as IconName}
+										lastActivity={item.lastActivity || item.updatedAt}
+										title={item.name}
+										transactionsCount={item?._count.transactions || 0}
+										monthlyBudget={item.monthlyBudget || 0}
+										monthlyTarget={item.monthlyTarget}
+										target={item.target}
+										type={item.type}
+										showExtension={false}
+									/>
+							  ))}
+					</EmptyStateWrapper>
+					<Link
+						href="/category"
+						className={buttonVariants({ variant: 'outline' })}
+					>
+						Show More
+					</Link>
 				</div>
 			</div>
 		</div>

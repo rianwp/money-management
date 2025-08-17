@@ -25,6 +25,7 @@ interface ICategoryCardProps {
 	lastActivity: Date
 	transactionsCount: number
 	id: number
+	showExtension?: boolean
 }
 
 const typeStyle = {
@@ -48,6 +49,7 @@ const CategoryCard = ({
 	monthlyTarget,
 	target,
 	id,
+	showExtension = true,
 }: ICategoryCardProps) => {
 	const { mutate: deleteCategory } = useDeleteCategory()
 	const getBackgroundIcon = () => typeStyle[type].bg
@@ -189,25 +191,29 @@ const CategoryCard = ({
 							<p className="font-semibold">{formatDate(lastActivity)}</p>
 						</div>
 					</div>
-					<Separator />
-					<div className="flex flex-row justify-end gap-2">
-						<ActionCategoryDialog
-							defaultValues={{
-								id,
-								type,
-								name: title,
-								description,
-								icon,
-								target: target || undefined,
-								monthlyTarget: monthlyTarget || undefined,
-							}}
-						>
-							<Button variant="outline" size="sm">
-								<Edit />
-							</Button>
-						</ActionCategoryDialog>
-						<DeleteConfirmationAlert onDelete={() => handleDelete(id)} />
-					</div>
+					{showExtension ? (
+						<>
+							<Separator />
+							<div className="flex flex-row justify-end gap-2">
+								<ActionCategoryDialog
+									defaultValues={{
+										id,
+										type,
+										name: title,
+										description,
+										icon,
+										target: target || undefined,
+										monthlyTarget: monthlyTarget || undefined,
+									}}
+								>
+									<Button variant="outline" size="sm">
+										<Edit />
+									</Button>
+								</ActionCategoryDialog>
+								<DeleteConfirmationAlert onDelete={() => handleDelete(id)} />
+							</div>
+						</>
+					) : null}
 				</div>
 			</CardContent>
 		</Card>
