@@ -5,10 +5,12 @@ const nextConfig: NextConfig = {
 	eslint: {
 		ignoreDuringBuilds: true,
 	},
-
-	// experimental: {
-	// 	nodeMiddleware: true,
-	// },
+	experimental: {
+		esmExternals: true,
+	},
+	typescript: {
+		ignoreBuildErrors: false,
+	},
 }
 
 export default nextConfig
