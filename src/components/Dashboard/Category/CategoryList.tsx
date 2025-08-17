@@ -98,8 +98,13 @@ const CategoryList = () => {
 					</ActionCategoryDialog>
 				</div>
 			</div>
-			<div className="grid xl:grid-cols-3 lg:grid-cols-2 grid-cols-1 md:gap-6 gap-4">
-				<EmptyStateWrapper isEmpty={isEmpty} message="You have no category yet">
+
+			<EmptyStateWrapper
+				isEmpty={isEmpty}
+				message="You have no category yet"
+				className="h-[70vh]"
+			>
+				<div className="grid xl:grid-cols-3 lg:grid-cols-2 grid-cols-1 md:gap-6 gap-4">
 					{categoriesFlat.map((item, index) => (
 						<CategoryCard
 							key={index}
@@ -122,8 +127,8 @@ const CategoryList = () => {
 						Array.from({ length: 9 }).map((_, i) => (
 							<Skeleton key={i} className="h-[358px] w-full rounded-md" />
 						))}
-				</EmptyStateWrapper>
-			</div>
+				</div>
+			</EmptyStateWrapper>
 		</section>
 	)
 }

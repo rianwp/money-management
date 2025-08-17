@@ -24,6 +24,8 @@ const useFilterParams = (fieldInput: IFilterField[]) => {
 					value === TransactionType.EXPENSE
 					? value
 					: undefined
+			case 'sort-select':
+				return value === 'asc' || value === 'desc' ? value : undefined
 			default:
 				return value || undefined
 		}
