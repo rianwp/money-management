@@ -10,7 +10,7 @@ import {
 	DialogTitle,
 	DialogTrigger,
 } from '@/components/ui/dialog'
-import ButtonLoader from '@/components/utils/ButtonLoader'
+import ButtonLoader from '@/components/utils/button-loader'
 import { TransactionType } from '@prisma/client'
 import { Edit, MinusCircle, Plus, PlusCircle } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -30,7 +30,7 @@ import {
 	ITransactionCreateRequest,
 	transactionCreateSchema,
 } from '@/types/transaction/api'
-import DatePicker from '@/components/utils/DatePicker'
+import DatePicker from '@/components/utils/date-picker'
 import {
 	Select,
 	SelectContent,
@@ -38,12 +38,12 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from '@/components/ui/select'
-import useGetCategory from '@/hooks/category/useGetCategory'
-import SectionLoader from '@/components/utils/SectionLoader'
-import useCreateTransaction from '@/hooks/transaction/useCreateTransaction'
-import useUpdateTransaction from '@/hooks/transaction/useUpdateTransaction'
+import useGetCategory from '@/hooks/category/use-get-gategory'
+import SectionLoader from '@/components/utils/section-loader'
+import useCreateTransaction from '@/hooks/transaction/use-create-transaction'
+import useUpdateTransaction from '@/hooks/transaction/use-update-transaction'
 import { useEffect, useState } from 'react'
-import ActionCategoryDialog from '../Category/ActionCategoryDialog'
+import ActionCategoryDialog from '../category/action-category-dialog'
 
 interface IActionTransactionDialogProps {
 	type: TransactionType

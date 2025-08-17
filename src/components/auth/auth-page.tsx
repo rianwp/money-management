@@ -1,4 +1,4 @@
-import Logo from '../Logo'
+import Logo from '../logo'
 
 interface IAuthPageProps {
 	children: React.ReactNode

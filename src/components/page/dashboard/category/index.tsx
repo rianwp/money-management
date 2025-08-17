@@ -1,6 +1,6 @@
 'use client'
 
-import CategoryList from '@/components/dashboard/Category/CategoryList'
+import CategoryList from '@/components/dashboard/category/category-list'
 
 const CategoryPage = () => {
 	return (

@@ -1,10 +1,10 @@
 import { Search } from 'lucide-react'
 import { Input } from '../ui/input'
-import ButtonLoader from './ButtonLoader'
+import ButtonLoader from './button-loader'
 import { useState, useEffect } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { useDebouncedCallback } from 'use-debounce'
-import useUtilsSearchParams from '@/hooks/useUtilsSearchParams'
+import useUtilsSearchParams from '@/hooks/use-utils-search-params'
 
 interface ISearchInputProps {
 	isLoading: boolean

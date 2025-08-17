@@ -1,6 +1,6 @@
 'use client'
 
-import { useIsMobile } from '@/hooks/useMobile'
+import { useIsMobile } from '@/hooks/use-mobile'
 import { Separator } from '../../ui/separator'
 import { SidebarTrigger } from '../../ui/sidebar'
 

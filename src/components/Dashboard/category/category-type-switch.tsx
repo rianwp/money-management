@@ -1,5 +1,5 @@
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import useUtilsSearchParams from '@/hooks/useUtilsSearchParams'
+import useUtilsSearchParams from '@/hooks/use-utils-search-params'
 import { TransactionType } from '@prisma/client'
 import { useSearchParams } from 'next/navigation'
 import { useEffect, useState } from 'react'

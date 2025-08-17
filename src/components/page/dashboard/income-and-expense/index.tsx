@@ -1,7 +1,7 @@
 'use client'
 
-import TransactionAction from '@/components/dashboard/Transaction/TransactionAction'
-import TransactionTable from '@/components/dashboard/Transaction/TransactionTable'
+import TransactionAction from '@/components/dashboard/transaction/transaction-action'
+import TransactionTable from '@/components/dashboard/transaction/transaction-table'
 
 const IncomeExpensePage = () => {
 	return (

@@ -32,12 +32,12 @@ import {
 	categoryCreateSchema,
 	ICategoryCreateRequest,
 } from '@/types/category/api'
-import useCreateCategory from '@/hooks/category/useCreateCategory'
-import ButtonLoader from '@/components/utils/ButtonLoader'
-import DynamicIcon from '@/components/utils/DynamicIcon'
+import useCreateCategory from '@/hooks/category/use-create-category'
+import ButtonLoader from '@/components/utils/button-loader'
+import DynamicIcon from '@/components/utils/dynamic-icon'
 import { IconName } from '@/types/icon'
 import { TransactionType } from '@prisma/client'
-import useUpdateCategory from '@/hooks/category/useUpdateCategory'
+import useUpdateCategory from '@/hooks/category/use-update-category'
 
 interface IActionCategoryDialogProps {
 	type?: TransactionType

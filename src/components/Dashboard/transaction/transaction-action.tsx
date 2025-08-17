@@ -1,5 +1,5 @@
 import { Card, CardAction, CardContent } from '@/components/ui/card'
-import ActionCategoryDialog from './ActionTransactionDialog'
+import ActionCategoryDialog from './action-transaction-dialog'
 import { TransactionType } from '@prisma/client'
 
 const TransactionAction = () => {

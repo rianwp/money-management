@@ -1,8 +1,8 @@
 import type { Metadata } from 'next'
 import { Roboto } from 'next/font/google'
 import { cn } from '@/lib/utils'
-import Providers from '@/components/Providers'
-import CustomToaster from '@/components/utils/CustomToaster'
+import Providers from '@/components/providers'
+import CustomToaster from '@/components/utils/custom-toaster'
 import NextTopLoader from 'nextjs-toploader'
 import '@/assets/style/globals.css'
 

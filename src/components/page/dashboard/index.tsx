@@ -1,21 +1,21 @@
 'use client'
 
-import TransactionTable from '@/components/dashboard/Transaction/TransactionTable'
-import BalanceCard from '@/components/dashboard/UserSummary/BalanceCard'
-import useGetUserGrowth from '@/hooks/user/useGetUserGrowth'
+import TransactionTable from '@/components/dashboard/transaction/transaction-table'
+import BalanceCard from '@/components/dashboard/user-summary/BalanceCard'
+import useGetUserGrowth from '@/hooks/user/use-get-user-growth'
 import {
 	ProgressCard,
 	ProgressCardDescription,
 	ProgressCardTitle,
 	ProgressCardValue,
-} from '@/components/dashboard/UserSummary/ProgressCard'
-import useGetUserBalance from '@/hooks/user/useGetUserBalance'
-import useGetCategory from '@/hooks/category/useGetCategory'
-import CategoryCard from '@/components/dashboard/Category/CategoryCard'
+} from '@/components/dashboard/user-summary/ProgressCard'
+import useGetUserBalance from '@/hooks/user/use-get-user-balance'
+import useGetCategory from '@/hooks/category/use-get-gategory'
+import CategoryCard from '@/components/dashboard/category/category-card'
 import { IconName } from '@/types/icon'
 import { buttonVariants } from '@/components/ui/button'
 import Link from 'next/link'
-import EmptyStateWrapper from '@/components/utils/EmptyStateWrapper'
+import EmptyStateWrapper from '@/components/utils/empty-state-wrapper'
 import { useMemo } from 'react'
 import { Skeleton } from '@/components/ui/skeleton'
 

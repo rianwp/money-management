@@ -20,7 +20,7 @@ import {
 	SidebarMenuItem,
 	SidebarMenuButton,
 } from '../ui/sidebar'
-import Logo from '../Logo'
+import Logo from '../logo'
 import { signOut } from 'next-auth/react'
 import Link from 'next/link'
 

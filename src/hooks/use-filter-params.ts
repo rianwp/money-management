@@ -2,7 +2,7 @@ import { formatDate, parseDate } from '@/lib/utils'
 import { IFilterField } from '@/types/form'
 import { useSearchParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
-import useUtilsSearchParams from './useUtilsSearchParams'
+import useUtilsSearchParams from './use-utils-search-params'
 import { TransactionType } from '@prisma/client'
 
 const useFilterParams = (fieldInput: IFilterField[]) => {

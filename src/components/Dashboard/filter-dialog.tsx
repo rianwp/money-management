@@ -10,10 +10,10 @@ import {
 	DialogHeader,
 	DialogTitle,
 } from '../ui/dialog'
-import ButtonLoader from '../utils/ButtonLoader'
-import DynamicFilterForm from '../utils/DynamicFilterForm'
+import ButtonLoader from '../utils/button-loader'
+import DynamicFilterForm from '../utils/dynamic-filter-form'
 import { IFilterField } from '@/types/form'
-import useUtilsSearchParams from '@/hooks/useUtilsSearchParams'
+import useUtilsSearchParams from '@/hooks/use-utils-search-params'
 
 interface IFilterDialogProps {
 	disabled?: boolean

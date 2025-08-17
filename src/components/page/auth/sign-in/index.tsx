@@ -1,10 +1,10 @@
 'use client'
 
-import AuthForm from '@/components/auth/AuthForm'
-import AuthPage from '@/components/auth/AuthPage'
+import AuthForm from '@/components/auth/auth-form'
+import AuthPage from '@/components/auth/auth-page'
 import { loginSchema } from '@/types/auth/api'
-import { IAuthFormComponentData } from '@/types/auth/authForm'
-import useSignIn from '@/hooks/auth/useSignIn'
+import { IAuthFormComponentData } from '@/types/auth/auth-form'
+import useSignIn from '@/hooks/auth/use-sign-in'
 import { useMemo } from 'react'
 
 const SignInPage = () => {

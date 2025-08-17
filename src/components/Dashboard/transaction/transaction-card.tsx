@@ -1,5 +1,5 @@
 import { Card } from '@/components/ui/card'
-import DynamicIcon from '@/components/utils/DynamicIcon'
+import DynamicIcon from '@/components/utils/dynamic-icon'
 import { cn, formatDate, formatRupiah } from '@/lib/utils'
 import { IconName } from '@/types/icon'
 import { TransactionType } from '@prisma/client'

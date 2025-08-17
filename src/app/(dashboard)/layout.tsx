@@ -1,5 +1,5 @@
-import AppSidebar from '@/components/dashboard/AppSidebar'
-import Header from '@/components/dashboard/Header'
+import AppSidebar from '@/components/dashboard/app-sidebar'
+import Header from '@/components/dashboard/header'
 import { SidebarProvider } from '@/components/ui/sidebar'
 
 interface ILayoutProps {

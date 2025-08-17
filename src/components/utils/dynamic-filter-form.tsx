@@ -19,7 +19,7 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from '@/components/ui/select'
-import DatePicker from '@/components/utils/DatePicker'
+import DatePicker from '@/components/utils/date-picker'
 import { IFilterField } from '@/types/form'
 import { TransactionType } from '@prisma/client'
 
