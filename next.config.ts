@@ -1,3 +1,4 @@
+import redirectRules from '@/lib/redirect-rules'
 import type { NextConfig } from 'next'
 
 const nextConfig: NextConfig = {
@@ -13,6 +14,9 @@ const nextConfig: NextConfig = {
 	},
 
 	reactStrictMode: true,
+	redirects: async () => {
+		return redirectRules
+	},
 }
 
 export default nextConfig
