@@ -17,6 +17,15 @@ const nextConfig: NextConfig = {
 	redirects: async () => {
 		return redirectRules
 	},
+
+	images: {
+		remotePatterns: [
+			{
+				protocol: 'https',
+				hostname: process.env.BASE_URL || 'localhost',
+			},
+		],
+	},
 }
 
 export default nextConfig
