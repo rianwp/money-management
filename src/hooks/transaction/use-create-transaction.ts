@@ -31,6 +31,7 @@ const useCreateTransaction = () => {
 				queryKey: ['getUserBalance'],
 				exact: false,
 			})
+			queryClient.invalidateQueries({ queryKey: ['getCategory'], exact: false })
 			if (data.success) {
 				toast('Success add transaction', {
 					position: 'top-right',

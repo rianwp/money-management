@@ -196,6 +196,7 @@ const CategoryCard = ({
 							<Separator />
 							<div className="flex flex-row justify-end gap-2">
 								<ActionCategoryDialog
+									key={`edit-category-${id}`}
 									defaultValues={{
 										id,
 										type,
@@ -210,7 +211,10 @@ const CategoryCard = ({
 										<Edit />
 									</Button>
 								</ActionCategoryDialog>
-								<DeleteConfirmationAlert onDelete={() => handleDelete(id)} />
+								<DeleteConfirmationAlert
+									key={`delete-category-${id}`}
+									onDelete={() => handleDelete(id)}
+								/>
 							</div>
 						</>
 					) : null}

@@ -140,10 +140,8 @@ const ActionCategoryDialog = ({
 	const onSubmit = async (values: ICategoryCreateRequest) => {
 		const processedValues = {
 			...values,
-			monthlyTarget: values.monthlyTarget
-				? Number(values.monthlyTarget)
-				: undefined,
-			target: values.target ? Number(values.target) : undefined,
+			monthlyTarget: values.monthlyTarget ? Number(values.monthlyTarget) : null,
+			target: values.target ? Number(values.target) : null,
 		}
 
 		if (isEditMode && defaultValues?.id) {
@@ -156,14 +154,7 @@ const ActionCategoryDialog = ({
 		}
 
 		setOpen(false)
-		form.reset({
-			name: '',
-			type,
-			description: '',
-			icon: iconNames[0],
-			monthlyTarget: undefined,
-			target: undefined,
-		})
+		form.reset()
 	}
 
 	return (
@@ -272,12 +263,14 @@ const ActionCategoryDialog = ({
 											<Input
 												placeholder="Monthly target (optional)"
 												type="number"
+												min="0"
 												{...field}
 												value={field.value ?? ''}
 												onChange={(e) => {
-													const value = e.target.value
-														? Number(e.target.value)
-														: ''
+													const value =
+														e.target.value === ''
+															? null
+															: e.target.valueAsNumber
 													field.onChange(value)
 												}}
 											/>
@@ -299,12 +292,14 @@ const ActionCategoryDialog = ({
 											<Input
 												placeholder="Target (optional)"
 												type="number"
+												min="0"
 												{...field}
 												value={field.value ?? ''}
 												onChange={(e) => {
-													const value = e.target.value
-														? Number(e.target.value)
-														: ''
+													const value =
+														e.target.value === ''
+															? null
+															: e.target.valueAsNumber
 													field.onChange(value)
 												}}
 											/>

@@ -12,8 +12,13 @@ export const categoryCreateSchema = z.object({
 	monthlyTarget: z
 		.number()
 		.positive('Monthly target must be a positive number')
+		.nullable()
 		.optional(),
-	target: z.number().positive('Target must be a positive number').optional(),
+	target: z
+		.number()
+		.positive('Target must be a positive number')
+		.optional()
+		.nullable(),
 })
 
 export const categoryUpdateSchema = updateSchema(categoryCreateSchema)

@@ -35,6 +35,10 @@ const useUpdateTransaction = () => {
 					queryKey: ['getUserBalance'],
 					exact: false,
 				})
+				queryClient.invalidateQueries({
+					queryKey: ['getCategory'],
+					exact: false,
+				})
 
 				toast('Success update transaction', {
 					position: 'top-right',

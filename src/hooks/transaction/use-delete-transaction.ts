@@ -31,6 +31,10 @@ const useDeleteTransaction = () => {
 					queryKey: ['getUserBalance'],
 					exact: false,
 				})
+				queryClient.invalidateQueries({
+					queryKey: ['getCategory'],
+					exact: false,
+				})
 
 				toast('Success delete transaction', {
 					position: 'top-right',
