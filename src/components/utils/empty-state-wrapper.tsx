@@ -24,7 +24,7 @@ const EmptyStateWrapper = ({
 		>
 			<div className="w-[200px]">
 				<Image
-					src="/assets/img/empty-state.png"
+					src="/assets/img/empty-state.webp"
 					alt={message}
 					width={400}
 					height={400}
