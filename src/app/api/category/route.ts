@@ -112,7 +112,7 @@ export const GET = async (
 				)
 				transformed.monthlyBudget = category.transactions
 					.filter((tx: any) => {
-						const txDate = new Date(tx.createdAt)
+						const txDate = new Date(tx.date)
 						return txDate >= startOfMonth && txDate <= endOfMonth
 					})
 					.reduce(
