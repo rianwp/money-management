@@ -220,15 +220,7 @@ const CategoryCard = ({
 									</Button>
 								</ActionCategoryDialog>
 								<DeleteConfirmationAlert
-									key={`delete-category-${JSON.stringify({
-										id,
-										type,
-										title,
-										description,
-										icon,
-										target,
-										monthlyTarget,
-									})}`}
+									key={`delete-category-${id}`}
 									onDelete={() => handleDelete(id)}
 								/>
 							</div>
