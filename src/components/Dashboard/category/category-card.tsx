@@ -196,7 +196,15 @@ const CategoryCard = ({
 							<Separator />
 							<div className="flex flex-row justify-end gap-2">
 								<ActionCategoryDialog
-									key={`edit-category-${id}`}
+									key={`edit-category-${JSON.stringify({
+										id,
+										type,
+										title,
+										description,
+										icon,
+										target,
+										monthlyTarget,
+									})}`}
 									defaultValues={{
 										id,
 										type,
@@ -212,7 +220,15 @@ const CategoryCard = ({
 									</Button>
 								</ActionCategoryDialog>
 								<DeleteConfirmationAlert
-									key={`delete-category-${id}`}
+									key={`delete-category-${JSON.stringify({
+										id,
+										type,
+										title,
+										description,
+										icon,
+										target,
+										monthlyTarget,
+									})}`}
 									onDelete={() => handleDelete(id)}
 								/>
 							</div>
