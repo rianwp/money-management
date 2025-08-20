@@ -1,13 +1,12 @@
 import { z } from 'zod'
 import { baseQuerySchema, updateSchema } from '../api'
 import { Prisma } from '@prisma/client'
-
-const TransactionTypeSchema = z.enum(['INCOME', 'EXPENSE'])
+import { transactionTypeSchema } from '../transaction/api'
 
 export const categoryCreateSchema = z.object({
 	name: z.string().min(1, 'Name is required'),
 	icon: z.string().optional(),
-	type: TransactionTypeSchema,
+	type: transactionTypeSchema,
 	description: z.string().optional(),
 	monthlyTarget: z
 		.number()
@@ -24,7 +23,7 @@ export const categoryCreateSchema = z.object({
 export const categoryUpdateSchema = updateSchema(categoryCreateSchema)
 
 export const categoryQuerySchema = baseQuerySchema.extend({
-	type: TransactionTypeSchema.nullable().optional(),
+	type: transactionTypeSchema.nullable().optional(),
 	include: z
 		.string()
 		.refine(

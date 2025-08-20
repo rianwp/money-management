@@ -1,5 +1,6 @@
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import useUtilsSearchParams from '@/hooks/use-utils-search-params'
+import { capitalize } from '@/lib/utils'
 import { TransactionType } from '@prisma/client'
 import { useSearchParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
@@ -31,8 +32,11 @@ const CategoryTypeSwitch = () => {
 		>
 			<TabsList className="h-full lg:w-auto w-full flex-nowrap">
 				<TabsTrigger value="all">All Categories</TabsTrigger>
-				<TabsTrigger value={TransactionType.INCOME}>Income</TabsTrigger>
-				<TabsTrigger value={TransactionType.EXPENSE}>Expense</TabsTrigger>
+				{Object.values(TransactionType).map((type) => (
+					<TabsTrigger key={type} value={type}>
+						{capitalize(type)}
+					</TabsTrigger>
+				))}
 			</TabsList>
 		</Tabs>
 	)

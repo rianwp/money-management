@@ -38,6 +38,7 @@ import DynamicIcon from '@/components/utils/dynamic-icon'
 import { IconName } from '@/types/icon'
 import { TransactionType } from '@prisma/client'
 import useUpdateCategory from '@/hooks/category/use-update-category'
+import { capitalize } from '@/lib/utils'
 
 interface IActionCategoryDialogProps {
 	type?: TransactionType
@@ -199,12 +200,11 @@ const ActionCategoryDialog = ({
 											</SelectTrigger>
 										</FormControl>
 										<SelectContent>
-											<SelectItem value={TransactionType.INCOME}>
-												Income
-											</SelectItem>
-											<SelectItem value={TransactionType.EXPENSE}>
-												Expense
-											</SelectItem>
+											{Object.values(TransactionType).map((type) => (
+												<SelectItem key={type} value={type}>
+													{capitalize(type)}
+												</SelectItem>
+											))}
 										</SelectContent>
 									</Select>
 									<FormMessage />

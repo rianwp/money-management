@@ -1,14 +1,14 @@
 'use client'
 
 import TransactionTable from '@/components/dashboard/transaction/transaction-table'
-import BalanceCard from '@/components/dashboard/user-summary/BalanceCard'
+import BalanceCard from '@/components/dashboard/user-summary/balance-card'
 import useGetUserGrowth from '@/hooks/user/use-get-user-growth'
 import {
 	ProgressCard,
 	ProgressCardDescription,
 	ProgressCardTitle,
 	ProgressCardValue,
-} from '@/components/dashboard/user-summary/ProgressCard'
+} from '@/components/dashboard/user-summary/progress-card'
 import useGetUserBalance from '@/hooks/user/use-get-user-balance'
 import useGetCategory from '@/hooks/category/use-get-gategory'
 import CategoryCard from '@/components/dashboard/category/category-card'

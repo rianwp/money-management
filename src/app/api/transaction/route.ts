@@ -23,36 +23,73 @@ export const POST = async (
 			body
 		)
 
-		const transaction = await prisma.transaction.create({
-			data: {
-				amount,
-				title,
-				description,
-				type,
-				date,
-				categoryId,
-				userId: Number(userId),
-			},
-		})
+		const transaction = await prisma.$transaction(async (tx) => {
+			const result = await tx.transaction.create({
+				data: {
+					amount,
+					title,
+					description,
+					type,
+					date,
+					categoryId,
+					userId: Number(userId),
+				},
+			})
 
-		const updateSummary =
-			type === TransactionType.INCOME
-				? {
-						totalIncome: {
+			const userSummary = await tx.userSummary.findUnique({
+				where: { userId: Number(userId) },
+			})
+
+			if (!userSummary) {
+				throw new Error('User summary not found')
+			}
+
+			const availableBalance =
+				Number(userSummary.totalIncome) -
+				Number(userSummary.totalOutcome) -
+				Number(userSummary.totalAllocation)
+
+			if (type === TransactionType.ALLOCATION) {
+				if (availableBalance < amount) {
+					throw new Error(
+						`Insufficient funds. Available: Rp${availableBalance.toLocaleString()}, ` +
+							`Required: Rp${amount.toLocaleString()}. `
+					)
+				}
+
+				await tx.userSummary.update({
+					where: { userId: Number(userId) },
+					data: {
+						totalAllocation: {
 							increment: amount,
 						},
-				  }
-				: {
-						totalOutcome: {
-							increment: amount,
-						},
-				  }
+					},
+				})
+			}
 
-		await prisma.userSummary.update({
-			where: {
-				userId: Number(userId),
-			},
-			data: updateSummary,
+			if (type === TransactionType.EXPENSE) {
+				if (availableBalance < amount) {
+					throw new Error(
+						`Insufficient funds. Available: Rp${availableBalance.toLocaleString()}, ` +
+							`Required: Rp${amount.toLocaleString()}. ` +
+							`Consider reducing allocations first.`
+					)
+				}
+
+				await tx.userSummary.update({
+					where: { userId: Number(userId) },
+					data: { totalOutcome: { increment: amount } },
+				})
+			}
+
+			if (type === TransactionType.INCOME) {
+				await tx.userSummary.update({
+					where: { userId: Number(userId) },
+					data: { totalIncome: { increment: amount } },
+				})
+			}
+
+			return result
 		})
 
 		return NextResponse.json(

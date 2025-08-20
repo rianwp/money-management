@@ -35,6 +35,9 @@ const typeStyle = {
 	EXPENSE: {
 		bg: 'bg-destructive/80',
 	},
+	ALLOCATION: {
+		bg: 'bg-allocation/80',
+	},
 }
 
 const CategoryCard = ({
@@ -56,7 +59,10 @@ const CategoryCard = ({
 
 	const getProgressColor = (progress: number) => {
 		if (progress === 0) return { color: '#6B7280', background: '#E5E7EB' }
-		if (type === TransactionType.INCOME) {
+		if (
+			type === TransactionType.INCOME ||
+			type === TransactionType.ALLOCATION
+		) {
 			if (progress < 50) return { color: '#EAB308', background: '#EAB30826' }
 			return { color: '#22C55E', background: '#22C55E26' }
 		}
@@ -70,6 +76,7 @@ const CategoryCard = ({
 
 	const getPercentageText = (value: number) => {
 		if (type === TransactionType.INCOME) return `${value}% achieved`
+		if (type === TransactionType.ALLOCATION) return `${value}% allocated`
 		if (type === TransactionType.EXPENSE) return `${value}% used`
 	}
 

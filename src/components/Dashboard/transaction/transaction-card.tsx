@@ -33,6 +33,11 @@ const TransactionCard = ({
 			text: 'text-destructive',
 			prefix: '-',
 		},
+		ALLOCATION: {
+			bg: 'bg-allocation/20',
+			text: 'text-allocation',
+			prefix: '',
+		},
 	}
 	const getBackgroundIcon = () => typeStyle[type].bg
 

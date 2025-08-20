@@ -128,6 +128,20 @@ const ActionTransactionDialog = ({
 			),
 			title: isEditMode ? 'Update Expense' : 'Add Expense',
 		},
+		ALLOCATION: {
+			button: isEditMode ? (
+				editModeButton
+			) : (
+				<ButtonLoader
+					variant="allocation"
+					icon={<Plus />}
+					isLoading={isTransactionCreatePending}
+				>
+					Add Allocation
+				</ButtonLoader>
+			),
+			title: isEditMode ? 'Update Allocation' : 'Add Allocation',
+		},
 	}
 
 	const form = useForm<ITransactionCreateRequest>({

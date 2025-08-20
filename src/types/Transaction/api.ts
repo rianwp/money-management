@@ -1,13 +1,18 @@
 import { z } from 'zod'
 import { baseQuerySchema, updateSchema } from '../api'
+import { TransactionType } from '@prisma/client'
 
-const TransactionTypeSchema = z.enum(['INCOME', 'EXPENSE'])
+export const transactionTypeSchema = z.enum([
+	TransactionType.INCOME,
+	TransactionType.EXPENSE,
+	TransactionType.ALLOCATION,
+])
 
 export const transactionCreateSchema = z.object({
 	title: z.string().min(1, 'Title is required'),
 	categoryId: z.number().positive('Category is required'),
 	description: z.string().optional(),
-	type: TransactionTypeSchema,
+	type: transactionTypeSchema,
 	date: z.coerce
 		.date({
 			required_error: 'Date is required',
@@ -24,7 +29,7 @@ export const transactionCreateSchema = z.object({
 export const transactionUpdateSchema = updateSchema(transactionCreateSchema)
 
 export const transactionQuerySchema = baseQuerySchema.extend({
-	type: TransactionTypeSchema.nullable().optional(),
+	type: transactionTypeSchema.nullable().optional(),
 	startDate: z.coerce
 		.date({
 			invalid_type_error: 'Start date must be a valid date',

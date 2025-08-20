@@ -20,8 +20,7 @@ const useFilterParams = (fieldInput: IFilterField[]) => {
 			case 'date':
 				return parseDate(value || '') || undefined
 			case 'type':
-				return value === TransactionType.INCOME ||
-					value === TransactionType.EXPENSE
+				return Object.values(TransactionType).includes(value)
 					? value
 					: undefined
 			case 'sort-select':

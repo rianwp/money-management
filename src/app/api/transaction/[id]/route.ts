@@ -4,6 +4,7 @@ import { handleError } from '@/lib/error'
 import { validateZod } from '@/lib/validation'
 import { IApiParams, IApiResponse } from '@/types/api'
 import { transactionUpdateSchema } from '@/types/transaction/api'
+import { TransactionType, UserSummary } from '@prisma/client'
 import { User as UserAuth } from 'next-auth'
 import { NextRequest, NextResponse } from 'next/server'
 
@@ -22,6 +23,17 @@ export const PUT = async (
 		)
 
 		const transaction = await prisma.$transaction(async (tx) => {
+			const userSummary = (await tx.userSummary.findUnique({
+				where: {
+					userId: Number(userId),
+				},
+			})) as UserSummary
+
+			const availableBalance =
+				Number(userSummary?.totalIncome) -
+				Number(userSummary?.totalOutcome) -
+				Number(userSummary?.totalAllocation)
+
 			const originalTransaction = await tx.transaction.findUnique({
 				where: {
 					id: Number(id),
@@ -37,7 +49,6 @@ export const PUT = async (
 				throw new Error('Transaction not found')
 			}
 
-			// Update the transaction
 			const updatedTransaction = await tx.transaction.update({
 				where: {
 					id: Number(id),
@@ -53,44 +64,76 @@ export const PUT = async (
 				},
 			})
 
-			// Calculate and apply summary changes
 			let incomeChange = 0
 			let outcomeChange = 0
+			let allocationChange = 0
 
-			if (originalTransaction.type === 'INCOME') {
-				incomeChange -= Number(originalTransaction.amount)
-			} else {
-				outcomeChange -= Number(originalTransaction.amount)
-			}
+			if (amount) {
+				if (originalTransaction.type === TransactionType.INCOME) {
+					incomeChange -= Number(originalTransaction.amount)
+				} else if (originalTransaction.type === TransactionType.EXPENSE) {
+					outcomeChange -= Number(originalTransaction.amount)
+				} else if (originalTransaction.type === TransactionType.ALLOCATION) {
+					allocationChange -= Number(originalTransaction.amount)
+				}
 
-			if (type === 'INCOME') {
-				incomeChange += Number(amount)
-			} else {
-				outcomeChange += Number(amount)
-			}
+				if (type === TransactionType.INCOME) {
+					incomeChange += Number(amount)
+				} else if (type === TransactionType.EXPENSE) {
+					const newOutcomeAmount = Number(amount)
+					const effectiveBalance = availableBalance - outcomeChange
 
-			if (incomeChange !== 0 || outcomeChange !== 0) {
-				const updateIncome =
-					incomeChange !== 0
-						? {
-								totalIncome: { increment: incomeChange },
-						  }
-						: {}
+					if (effectiveBalance < newOutcomeAmount) {
+						throw new Error(
+							`Insufficient funds. Available: Rp${effectiveBalance.toLocaleString()}, ` +
+								`Required: Rp${newOutcomeAmount.toLocaleString()}. ` +
+								`Consider reducing allocations first.`
+						)
+					}
+					outcomeChange += newOutcomeAmount
+				} else if (type === TransactionType.ALLOCATION) {
+					const newAllocationAmount = Number(amount)
+					const effectiveBalance = availableBalance - allocationChange
 
-				const updateOutcome =
-					outcomeChange !== 0
-						? {
-								totalOutcome: { increment: outcomeChange },
-						  }
-						: {}
+					if (effectiveBalance < newAllocationAmount) {
+						throw new Error(
+							`Insufficient balance for allocation. Available: Rp${effectiveBalance.toLocaleString()}, ` +
+								`Required: Rp${newAllocationAmount.toLocaleString()}`
+						)
+					}
 
-				await tx.userSummary.update({
-					where: { userId: Number(userId) },
-					data: {
-						...updateIncome,
-						...updateOutcome,
-					},
-				})
+					allocationChange += newAllocationAmount
+				}
+
+				if (
+					incomeChange !== 0 ||
+					outcomeChange !== 0 ||
+					allocationChange !== 0
+				) {
+					const updateIncome =
+						incomeChange !== 0
+							? { totalIncome: { increment: incomeChange } }
+							: {}
+
+					const updateOutcome =
+						outcomeChange !== 0
+							? { totalOutcome: { increment: outcomeChange } }
+							: {}
+
+					const updateAllocation =
+						allocationChange !== 0
+							? { totalAllocation: { increment: allocationChange } }
+							: {}
+
+					await tx.userSummary.update({
+						where: { userId: Number(userId) },
+						data: {
+							...updateIncome,
+							...updateOutcome,
+							...updateAllocation,
+						},
+					})
+				}
 			}
 
 			return updatedTransaction
@@ -135,24 +178,25 @@ export const DELETE = async (
 				throw new Error('Transaction not found')
 			}
 
-			// Update the transaction
 			const updatedTransaction = await tx.transaction.delete({
 				where: {
 					id: Number(id),
 				},
 			})
 
-			// Calculate and apply summary changes
 			let incomeChange = 0
 			let outcomeChange = 0
+			let allocationChange = 0
 
 			if (originalTransaction.type === 'INCOME') {
 				incomeChange -= Number(originalTransaction.amount)
-			} else {
+			} else if (originalTransaction.type === 'EXPENSE') {
 				outcomeChange -= Number(originalTransaction.amount)
+			} else if (originalTransaction.type === 'ALLOCATION') {
+				allocationChange -= Number(originalTransaction.amount)
 			}
 
-			if (incomeChange !== 0 || outcomeChange !== 0) {
+			if (incomeChange !== 0 || outcomeChange !== 0 || allocationChange !== 0) {
 				const updateIncome =
 					incomeChange !== 0
 						? {
@@ -167,11 +211,19 @@ export const DELETE = async (
 						  }
 						: {}
 
+				const updateAllocation =
+					allocationChange !== 0
+						? {
+								totalAllocation: { increment: allocationChange },
+						  }
+						: {}
+
 				await tx.userSummary.update({
 					where: { userId: Number(userId) },
 					data: {
 						...updateIncome,
 						...updateOutcome,
+						...updateAllocation,
 					},
 				})
 			}

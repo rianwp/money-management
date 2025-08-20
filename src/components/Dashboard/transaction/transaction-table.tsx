@@ -19,7 +19,7 @@ import SearchInput from '@/components/utils/search-input'
 import FilterDialog from '../filter-dialog'
 import { IFilterField } from '@/types/form'
 import useGetCategory from '@/hooks/category/use-get-gategory'
-import { parseDate } from '@/lib/utils'
+import { capitalize, parseDate } from '@/lib/utils'
 import { useSearchParams } from 'next/navigation'
 import useFilterParams from '@/hooks/use-filter-params'
 import useExportTransaction from '@/hooks/transaction/use-export-transaction'
@@ -54,7 +54,7 @@ const TransactionTable = ({
 			placeholder: 'Select category',
 			options:
 				categories?.data?.map((cat) => ({
-					label: cat.name,
+					label: `${cat.name} (${capitalize(cat.type)})`,
 					value: String(cat.id),
 				})) || [],
 		},
@@ -184,6 +184,15 @@ const TransactionTable = ({
 								{showExtension ? (
 									<div className="flex md:flex-row flex-col gap-x-4 gap-y-2">
 										<ActionTransactionDialog
+											key={`edit-transaction-${JSON.stringify({
+												id: item.id,
+												type: item.type,
+												amount: item.amount,
+												description: item.description,
+												categoryId: item.categoryId,
+												date: item.date,
+												title: item.title,
+											})}`}
 											defaultValues={{
 												amount: Number(item.amount),
 												id: item.id,
@@ -195,6 +204,7 @@ const TransactionTable = ({
 											type={item.type}
 										/>
 										<DeleteConfirmationAlert
+											key={`delete-transaction-${item.id}`}
 											onDelete={() => handleDelete(item.id)}
 										/>
 									</div>

@@ -39,7 +39,9 @@ const CategoryList = () => {
 
 	const validatedType = useMemo(() => {
 		const type = searchParams?.get('type')
-		return type === TransactionType.INCOME || type === TransactionType.EXPENSE
+		return type === TransactionType.INCOME ||
+			type === TransactionType.EXPENSE ||
+			type === TransactionType.ALLOCATION
 			? type
 			: undefined
 	}, [searchParams])

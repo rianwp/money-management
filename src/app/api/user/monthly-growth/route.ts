@@ -23,6 +23,9 @@ export const GET = async (): Promise<NextResponse<IApiResponse>> => {
 				where: {
 					userId: Number(userId),
 					date: { gte: start, lte: end },
+					type: {
+						in: ['INCOME', 'EXPENSE'],
+					},
 				},
 				_sum: { amount: true },
 			})
@@ -42,6 +45,9 @@ export const GET = async (): Promise<NextResponse<IApiResponse>> => {
 				where: {
 					userId: Number(userId),
 					date: { lte: until },
+					type: {
+						in: ['INCOME', 'EXPENSE'],
+					},
 				},
 				_sum: { amount: true },
 			})

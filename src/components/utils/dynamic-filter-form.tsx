@@ -22,6 +22,7 @@ import {
 import DatePicker from '@/components/utils/date-picker'
 import { IFilterField } from '@/types/form'
 import { TransactionType } from '@prisma/client'
+import { capitalize } from '@/lib/utils'
 
 interface IDynamicFilterFormProps {
 	fields: IFilterField[]
@@ -156,8 +157,11 @@ const renderField = (field: IFilterField, formField: any) => {
 						<SelectValue placeholder={field.placeholder} />
 					</SelectTrigger>
 					<SelectContent>
-						<SelectItem value={TransactionType.INCOME}>Income</SelectItem>
-						<SelectItem value={TransactionType.EXPENSE}>Expense</SelectItem>
+						{Object.values(TransactionType).map((type) => (
+							<SelectItem key={type} value={type}>
+								{capitalize(type)}
+							</SelectItem>
+						))}
 					</SelectContent>
 				</Select>
 			)
