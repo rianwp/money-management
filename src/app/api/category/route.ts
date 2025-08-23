@@ -174,24 +174,35 @@ export const POST = async (
 				},
 			})
 
+			let category
+
 			if (categoryExists) {
-				await tx.category.update({
+				category = await tx.category.update({
 					where: { id: categoryExists.id },
-					data: { isActive: true },
+					data: {
+						isActive: true,
+						name,
+						type,
+						description,
+						icon,
+						monthlyTarget,
+						target,
+						userId: Number(userId),
+					},
+				})
+			} else {
+				category = await tx.category.create({
+					data: {
+						name,
+						type,
+						description,
+						icon,
+						monthlyTarget,
+						target,
+						userId: Number(userId),
+					},
 				})
 			}
-
-			const category = await tx.category.create({
-				data: {
-					name,
-					type,
-					description,
-					icon,
-					monthlyTarget,
-					target,
-					userId: Number(userId),
-				},
-			})
 
 			return category
 		})
