@@ -165,16 +165,35 @@ export const POST = async (
 		const { name, type, description, icon, monthlyTarget, target } =
 			validateZod(categoryCreateSchema, body)
 
-		const category = await prisma.category.create({
-			data: {
-				name,
-				type,
-				description,
-				icon,
-				monthlyTarget,
-				target,
-				userId: Number(userId),
-			},
+		const category = await prisma.$transaction(async (tx) => {
+			const categoryExists = await tx.category.findFirst({
+				where: {
+					userId: Number(userId),
+					name,
+					type,
+				},
+			})
+
+			if (categoryExists) {
+				await tx.category.update({
+					where: { id: categoryExists.id },
+					data: { isActive: true },
+				})
+			}
+
+			const category = await tx.category.create({
+				data: {
+					name,
+					type,
+					description,
+					icon,
+					monthlyTarget,
+					target,
+					userId: Number(userId),
+				},
+			})
+
+			return category
 		})
 
 		return NextResponse.json(
