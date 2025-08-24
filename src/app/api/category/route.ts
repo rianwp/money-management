@@ -171,6 +171,7 @@ export const POST = async (
 					userId: Number(userId),
 					name,
 					type,
+					isActive: false,
 				},
 			})
 
@@ -178,7 +179,7 @@ export const POST = async (
 
 			if (categoryExists) {
 				category = await tx.category.update({
-					where: { id: categoryExists.id },
+					where: { id: categoryExists.id, isActive: false },
 					data: {
 						isActive: true,
 						name,
